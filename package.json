@@ -1,0 +1,23 @@
+{
+  "name": "tiddlywiki-markdown-importer-cli",
+  "version": "1.0.0",
+  "description": "tiddlywiki-markdown-importer-cli",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [
+    "markdown",
+    "tiddlywiki"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^20.8.9",
+    "chalk": "4",
+    "dayjs": "^1.11.10",
+    "dotenv": "^16.3.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0"
+  }
+}

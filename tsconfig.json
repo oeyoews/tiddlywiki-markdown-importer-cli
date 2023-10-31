@@ -1,0 +1,37 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"module": "CommonJS",
+		"declaration": true,
+		"jsx": "preserve",
+		"baseUrl": "src",
+		"types": [
+			"node",
+			// "tw5-typed"
+		],
+		"paths": {
+			"@/*": [
+				"./*"
+			]
+		},
+		"lib": [
+			"DOM",
+			"ESNext"
+		]
+	},
+	"include": [
+		"src/**/*.ts",
+		"types.d.ts",
+		"types/**/*.d.ts",
+	],
+	"exclude": [
+		"node_modules/"
+	],
+	"ts-node": {
+		"files": true,
+		// Do not forget to `npm i -D tsconfig-paths`
+		"require": [
+			"tsconfig-paths/register"
+		]
+	},
+}
