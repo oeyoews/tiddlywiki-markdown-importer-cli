@@ -1,15 +1,16 @@
 {
   "name": "tiddlywiki-markdown-importer-exporter-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "tiddlywiki-markdown-importer-exporter-cli",
   "bin": {
     "twmd": "./dist/index.js"
   },
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "dev": "ts-node index.ts",
-    "build": "ncc build index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
+    "dev": "ts-node src/index.ts",
+    "build": "ncc build src/index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
     "sync": "cnpm sync",
+    "format": "prettier src --write",
     "publish:dry": "npm publish --dry-run"
   },
   "keywords": [
@@ -26,6 +27,7 @@
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
     "gray-matter": "^4.0.3",
+    "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0"
   },
