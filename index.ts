@@ -33,7 +33,6 @@ const {
 const url = `${host}:${port}`;
 
 const targetdir = path.resolve(".", importpath);
-console.log(targetdir);
 if (!fs.existsSync(targetdir)) {
   new Error(`${targetdir} 不存在`);
 }

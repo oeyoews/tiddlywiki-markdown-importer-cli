@@ -35,3 +35,4 @@ tests/
 .idea/
 src/
 content/
+index.ts

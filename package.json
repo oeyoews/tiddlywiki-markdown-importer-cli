@@ -1,6 +1,6 @@
 {
   "name": "tiddlywiki-markdown-importer-exporter-cli",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "tiddlywiki-markdown-importer-exporter-cli",
   "bin": {
     "twmd": "./dist/index.js"

@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
 
-export default function readDirRecursive(dirPath) {
+export default function readDirRecursive(dirPath: string) {
   const files = fs.readdirSync(dirPath);
-  let filePaths = [];
+  let filePaths: any[] = [];
 
   files.forEach((file) => {
     const filePath = path.join(dirPath, file);

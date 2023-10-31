@@ -1,33 +1,17 @@
 {
 	"compilerOptions": {
-		"target": "es2015",
+		"target": "es2019",
 		"moduleResolution": "node",
+		"resolveJsonModule": true,
 		"esModuleInterop": true,
-		"module": "CommonJS",
-		"declaration": true,
-		"jsx": "preserve",
-		"baseUrl": "src",
-		"types": [
-			"node",
-			// "tw5-typed"
-		],
-		"paths": {
-			"@/*": [
-				"./*"
-			]
-		},
-		"lib": [
-			"DOM",
-			"ESNext"
-		]
+		"skipLibCheck": true,
+		"strict": true,
+		// "module": "CommonJS",
+		"declaration": false, // ncc to set false
 	},
-	"include": [
-		"src/**/*.ts",
-		"types.d.ts",
-		"types/**/*.d.ts",
-	],
 	"exclude": [
-		"node_modules/"
+		"node_modules/",
+		"dist"
 	],
 	"ts-node": {
 		"files": true,

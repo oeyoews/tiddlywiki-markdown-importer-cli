@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-export default (url, tiddler) => {
+export default (url: string, tiddler: { title: string }) => {
   fetch(url, {
     method: "PUT",
     headers: {
