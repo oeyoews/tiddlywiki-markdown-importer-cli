@@ -18,17 +18,16 @@ dotenv.config();
 const { PORT, IMPORTPATH, HOST, USERNAME, TUSERNAME } = process.env;
 
 program
-  .option('-p, --port <port>', '设置端口号 <8000>')
+  .option('-p, --port <port>', '设置端口号 <8080>')
   .option('-i, --importpath <importpath>', '设置导入路径 <content>')
   .option('-H, --host <host>', '设置主机名: http://0.0.0.0')
   .option('-u, --username <username>', '设置用户名 <your pc username>')
   .version(version, '-v, --version', '显示版本')
   .parse();
 
-
 // cli 中 dotenv 不可用
 const {
-  port = PORT || 8000,
+  port = PORT || 8080,
   importpath = IMPORTPATH || 'content',
   host = HOST || 'http://0.0.0.0',
   username = TUSERNAME || USERNAME || 'markdown-importer',
@@ -91,7 +90,11 @@ files.forEach(({ filename: title, filetype, filePath }, index) => {
     modified,
   };
 
-  Object.assign(tiddler, filteredData);
+  try {
+    Object.assign(tiddler, filteredData);
+  } catch (e) {
+    e;
+  }
 
   fetch(putTiddlerUrl)
     .then((res) => {

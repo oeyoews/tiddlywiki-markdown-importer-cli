@@ -15,7 +15,8 @@
 ```bash
 npm i -g tiddlywiki-markdown-importer-exporter-cli
 twmd -h
-twmd
+twmd -i .
+twmd -i /your/markdonw/folder
 ```
 
 ## TODO
@@ -28,6 +29,7 @@ twmd
 - [x] release npm package
 - [x] supoprt parse yml
 - [x] 默认读取当前目录下的 `content` 目录
+- [ ] yml 异常语法校验, 异常捕获
 - [ ] windows 下路径有问题
 - [ ] 相对路径的图片路径处理
 - [ ] support markdown exporter (tiddlywiki 插件版本:  markdow exporter)
