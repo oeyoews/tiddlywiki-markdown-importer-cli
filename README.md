@@ -16,6 +16,20 @@
 
 ## NOTE
 
+notion 导出的markdown, 不遵循 YML 语法
+
+```markdown
+# title
+
+
+Tag: xxx
+Last update: xxx
+
+# 正文部分
+
+xxx
+```
+
 
 <!-- // 针对本地太微nodejs(无密码)实例
 // 写入, 导出, 更新, 查询, 删
