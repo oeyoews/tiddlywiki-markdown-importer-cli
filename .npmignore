@@ -34,5 +34,5 @@ tests/
 !.vscode/extensions.json
 .idea/
 src/
+src/index.ts
 content/
-index.ts
