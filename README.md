@@ -10,7 +10,9 @@
 - [x] 写入文件的创建,修改时间
 - [x] suport import markdown file
 - [x] suport export markdown file(tiddlywiki 插件版本: markdown obsidian manager)
-- [ ] ncc 打包成cli, 支持参数, 配置文件读取
+- [x] ncc 打包成cli
+- [ ] 支持参数, 配置文件读取
+- [ ] release npm package
 - [ ] 相对路径的图片路径处理
 - [x] supoprt parse yml
 - [ ] support markdown exporter (tiddlywiki 插件版本:  markdow exporter)
