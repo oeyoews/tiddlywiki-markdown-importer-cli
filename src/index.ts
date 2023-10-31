@@ -31,11 +31,13 @@ const {
 
 const url = `${host}:${port}`;
 
-if (!fs.existsSync(importpath)) {
-  new Error(`${importpath} 不存在`);
+const targetdir = path.join(__dirname, importpath);
+console.log(targetdir);
+if (!fs.existsSync(targetdir)) {
+  new Error(`${targetdir} 不存在`);
 }
 
-const files = readDirRecursive(importpath);
+const files = readDirRecursive(targetdir);
 
 const writefiles = new Map();
 
