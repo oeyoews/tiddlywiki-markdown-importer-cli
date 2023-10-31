@@ -22,12 +22,14 @@ program
   .option('-u, --username <username>', '设置用户名 <your pc username>')
   .parse();
 
+  // cli 中 dotenv 不可用
 const {
-  port = PORT,
-  importpath = IMPORTPATH,
-  host = HOST,
+  port = PORT || 8000,
+  importpath = IMPORTPATH || 'content',
+  host = HOST || 'http://0.0.0.0',
   username = TUSERNAME || USERNAME || 'markdown-importer',
 } = program.opts();
+console.log(port, importpath, host, username);
 
 const url = `${host}:${port}`;
 if (importpath === undefined) {
