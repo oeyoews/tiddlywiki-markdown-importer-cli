@@ -1,14 +1,14 @@
 {
   "name": "tiddlywiki-markdown-importer-exporter-cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "tiddlywiki-markdown-importer-exporter-cli",
   "bin": {
     "twmd": "./dist/index.js"
   },
-  "main": "src/index.js",
+  "main": "index.ts",
   "scripts": {
-    "dev": "ts-node src/index.ts",
-    "build": "ncc build ./src/index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
+    "dev": "ts-node index.ts",
+    "build": "ncc build index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
     "sync": "cnpm sync",
     "publish:dry": "npm publish --dry-run"
   },

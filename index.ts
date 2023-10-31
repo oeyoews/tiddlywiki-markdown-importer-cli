@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
+// @ts-nocheck
 import fs from "fs";
 import path from "path";
 import chalk from "chalk";
-import write from "@/write";
+import write from "./src/write";
 import dotenv from "dotenv";
-import formattime from "@/formattime";
-import readDirRecursive from "@/getallfiles";
+import formattime from "./src/formattime";
+import readDirRecursive from "./src/getallfiles";
 import matter from "gray-matter";
-import filterNonStringValues from "@/lib/filterfrontmatter";
+import filterNonStringValues from "./src/lib/filterfrontmatter";
 import { program } from "commander";
 
 dotenv.config();
@@ -31,7 +32,7 @@ const {
 
 const url = `${host}:${port}`;
 
-const targetdir = path.join(__dirname, importpath);
+const targetdir = path.resolve(".", importpath);
 console.log(targetdir);
 if (!fs.existsSync(targetdir)) {
   new Error(`${targetdir} 不存在`);
