@@ -58,12 +58,13 @@ const writefiles = new Map();
 // 遍历文件列表
 files.forEach((file) => {
   // cli-progress
-  console.log(chalk.green.bold(`正在导入 ${importpath}...`));
   // 检查文件扩展名是否为.md，以过滤出Markdown文件
   const pattern = /[^\\/:*?"<>|\r\n]+(?=\.[^.\\]+$)/;
   let title = file.match(pattern)[0];
   const extname = path.extname(file);
   if (extname !== '.md' && extname !== '.markdown') return;
+
+  console.log(chalk.green.bold(`正在导入 ${file}`));
 
   const text = fs.readFileSync(file, 'utf-8');
   // TODO: content 首行不会被去除
@@ -120,7 +121,7 @@ files.forEach((file) => {
         return;
       } else {
         // @ts-ignore
-        write(putTiddlerUrl, tiddler);
+        write(putTiddlerUrl, tiddler, title);
       }
     });
 });

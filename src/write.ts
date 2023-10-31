@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-export default (url: URL, tiddler: { title: string }) => {
+export default (url: URL, tiddler: { title: string }, title: string) => {
   fetch(url, {
     method: 'PUT',
     headers: {
@@ -9,6 +9,6 @@ export default (url: URL, tiddler: { title: string }) => {
     },
     body: JSON.stringify(tiddler),
   }).then(() => {
-    console.log(chalk.green.bold(`已成功写入`));
+    console.log(chalk.green.bold(`已成功写入 ${title}`));
   });
 };
