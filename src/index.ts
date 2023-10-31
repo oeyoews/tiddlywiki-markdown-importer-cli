@@ -3,7 +3,8 @@ import path from "path";
 import chalk from "chalk";
 import write from "@/write";
 import dotenv from "dotenv";
-import formattime from "./formattime";
+import formattime from "@/formattime";
+import readDirRecursive from "@/getallfiles";
 
 dotenv.config();
 
@@ -15,55 +16,63 @@ const host = HOST || "http://localhost";
 
 const url = `${host}:${port}`;
 
-const files = fs.readdirSync(IMPORTERPATH);
-
-
-// test
-const title = "index";
-const filename = `${markdownImporterPath}/${title}.md`;
-const text = fs.readFileSync(filename, "utf-8");
-
 if (!fs.existsSync(markdownImporterPath)) {
-  console.log(`${markdownImporterPath} 不存在`);
+  new Error(`${markdownImporterPath} 不存在`);
 }
 
-// TODO: try catch
-const { birthtime, mtime } = fs.statSync(filename);
+const files = readDirRecursive(markdownImporterPath);
 
-const created = formattime(birthtime);
-const modified = formattime(mtime);
-const creator = TUSERNAME || USERNAME || "markdown-importer"; // 这一步会关系到用户隐私
+const writefiles = new Map();
 
-const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, url);
+// 遍历文件列表
+files.forEach((file) => {
+  // 检查文件扩展名是否为.md，以过滤出Markdown文件
+  const pattern = /[^\\/:*?"<>|\r\n]+(?=\.[^.\\]+$)/;
+  const title = file.match(pattern)[0];
+  // record files
+  if (writefiles.has(title)) {
+    console.log(chalk.red.bold(`title: ${title} 已存在`));
+    return;
+  } else {
+    writefiles.set(title, file);
+  }
+  const extname = path.extname(file);
+  if (extname !== ".md" && extname !== ".markdown") return;
 
-const tiddler = {
-  title,
-  text,
-  type: "text/markdown", // TODO: image/png image/jpg 特殊处理
-  created,
-  creator,
-  modified,
-  // tags: "", // TODO
-};
+  const text = fs.readFileSync(file, "utf-8");
 
-fetch(putTiddlerUrl)
-  .then((res) => {
-    let data;
-    if (res.ok) {
-      data = res.json();
-      return data;
-    }
-    return false;
-  })
-  .then((data) => {
-    if (data) {
-      console.log(data);
-      const { title, text, type, created, creator, modified, tags } = data;
-      console.log(chalk.red.bold("import failed"));
-      return;
-    } else {
-      write(putTiddlerUrl, tiddler);
-    }
-  });
+  const { birthtime, mtime } = fs.statSync(file);
+  const created = formattime(birthtime);
+  const modified = formattime(mtime);
+  const creator = TUSERNAME || USERNAME || "markdown-importer";
 
-// generate import tiddlers
+  // TODO: 测试是否可以自动递归目录
+  const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, url);
+
+  const tiddler = {
+    title, // 可以省略, puttiddlerurl 决定这个
+    text,
+    type: "text/markdown",
+    created,
+    creator,
+    modified,
+  };
+
+  fetch(putTiddlerUrl)
+    .then((res) => {
+      let data;
+      if (res.ok) {
+        data = res.json();
+        return data;
+      }
+      return false;
+    })
+    .then((data) => {
+      if (data) {
+        console.log(chalk.red.bold(`Import of ${title} failed`));
+        return;
+      } else {
+        write(putTiddlerUrl, tiddler);
+      }
+    });
+});

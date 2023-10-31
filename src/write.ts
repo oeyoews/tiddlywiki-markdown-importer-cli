@@ -9,6 +9,6 @@ export default (url, tiddler) => {
     },
     body: JSON.stringify(tiddler),
   }).then(() => {
-    console.log(chalk.green.bold(`已成功写入`));
+    console.log(chalk.green.bold(`已成功写入 ${tiddler.title}`));
   });
 };
