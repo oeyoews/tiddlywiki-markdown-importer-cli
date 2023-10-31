@@ -30,6 +30,7 @@ twmd -i /your/markdonw/folder
 - [x] release npm package
 - [x] supoprt parse yml
 - [x] 默认读取当前目录下的 `content` 目录
+- [x] 如何本地测试npm package link?
 - [ ] 名字错乱(支持导入md&&md.meta)
 - [ ] yml 异常语法校验, 异常捕获
 - [ ] windows 下路径有问题
