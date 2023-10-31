@@ -11,6 +11,7 @@ import matter from 'gray-matter';
 import filterNonStringValues from './lib/filterfrontmatter';
 import { program } from 'commander';
 import cliProgress from 'cli-progress';
+import { version } from '../package.json';
 
 dotenv.config();
 
@@ -21,7 +22,9 @@ program
   .option('-i, --importpath <importpath>', '设置导入路径 <content>')
   .option('-H, --host <host>', '设置主机名: http://0.0.0.0')
   .option('-u, --username <username>', '设置用户名 <your pc username>')
+  .version(version, '-v, --version', '显示版本')
   .parse();
+
 
 // cli 中 dotenv 不可用
 const {
