@@ -7,12 +7,6 @@ import formattime from "./formattime";
 
 dotenv.config();
 
-// 针对本地太微nodejs(无密码)实例
-// 写入, 导出, 更新, 查询, 删
-// TODO: 需要做好条目重写的提示
-// https://github.com/Jermolene/TiddlyWiki5/blob/4b56cb42983d4134715eb7fe7b083fdcc04980f0/core/modules/server/server.js#L31
-// https://github.com/Jermolene/TiddlyWiki5/blob/4b56cb42983d4134715eb7fe7b083fdcc04980f0/core/modules/server/routes/put-tiddler.js
-
 const { PORT, IMPORTERPATH, HOST, USERNAME, TUSERNAME } = process.env;
 
 const markdownImporterPath = IMPORTERPATH || "content";
@@ -20,6 +14,9 @@ const port = PORT || 8000;
 const host = HOST || "http://localhost";
 
 const url = `${host}:${port}`;
+
+const files = fs.readdirSync(IMPORTERPATH);
+
 
 // test
 const title = "index";
