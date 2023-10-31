@@ -60,7 +60,6 @@ const writefiles = new Map();
 fetch(url)
   .then((res) => {
     // TODO: 抑制错误输出
-    console.log(res.ok, 'is ok ?');
     !res.ok && new Error('error');
   })
   .then(() => {
