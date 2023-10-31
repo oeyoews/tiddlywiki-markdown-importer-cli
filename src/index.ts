@@ -38,7 +38,7 @@ const files = readDirRecursive(targetdir);
 
 const progressBar = new cliProgress.SingleBar(
   {
-    format: `${chalk.green('{bar}')} {percentage}% | {value}/{total} {title}`,
+    format: `${chalk.green('{bar}')} {percentage}% | {value}/{total} {title} `,
     stopOnComplete: true,
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
@@ -50,19 +50,13 @@ const progressBar = new cliProgress.SingleBar(
 const writefiles = new Map();
 
 // 遍历文件列表
-files.forEach((file, index) => {
-  // cli-progress
-  // 检查文件扩展名是否为.md，以过滤出Markdown文件
-  const pattern = /[^\\/:*?"<>|\r\n]+(?=\.[^.\\]+$)/;
-  let title = file.match(pattern)[0];
-  const extname = path.extname(file);
-  if (extname !== '.md' && extname !== '.markdown') return;
+files.forEach(({ filename: title, filetype, filePath }, index) => {
+  if (filetype !== '.md' && filetype !== '.markdown') return;
 
-  const text = fs.readFileSync(file, 'utf-8');
+  const text = fs.readFileSync(filePath, 'utf-8');
   // TODO: content 首行不会被去除
   const { data, content } = matter(text);
   if (!data) return;
-  let removednewlineContent = content;
 
   if (data?.title) {
     title = data.title;
@@ -77,9 +71,9 @@ files.forEach((file, index) => {
     // console.log(chalk.red.bold(`title: ${title} 已存在`));
     return;
   } else {
-    writefiles.set(title, file);
+    writefiles.set(title, filePath);
   }
-  const { birthtime, mtime } = fs.statSync(file);
+  const { birthtime, mtime } = fs.statSync(filePath);
   const created = formattime(birthtime);
   const modified = formattime(mtime);
 

@@ -3,18 +3,23 @@ import path from 'path';
 
 export default function readDirRecursive(dirPath: string) {
   const files = fs.readdirSync(dirPath);
-  let filePaths: any[] = [];
+  let fileData: { filename: string; filetype: string; filePath: string }[] = [];
 
   files.forEach((file) => {
     const filePath = path.join(dirPath, file);
     const stats = fs.statSync(filePath);
 
     if (stats.isDirectory()) {
-      filePaths = filePaths.concat(readDirRecursive(filePath));
+      fileData = fileData.concat(readDirRecursive(filePath));
     } else if (stats.isFile()) {
-      filePaths.push(filePath);
+      fileData.push({
+        filename: path.parse(file).name,
+        filetype: path.parse(file).ext,
+        filePath: filePath,
+      });
     }
   });
 
-  return filePaths;
+  return fileData;
 }
+
