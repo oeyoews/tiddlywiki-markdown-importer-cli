@@ -13,35 +13,50 @@ import { program } from 'commander';
 
 dotenv.config();
 
-const { PORT, IMPORTERPATH, HOST, USERNAME, TUSERNAME } = process.env;
+const { PORT, IMPORTPATH, HOST, USERNAME, TUSERNAME } = process.env;
 
 program
   .option('-p, --port <port>', '设置端口号 <8000>')
-  .option('-i, --importerpath <importpath>', '设置导入路径 <content>')
+  .option('-i, --importpath <importpath>', '设置导入路径 <content>')
   .option('-H, --host <host>', '设置主机名: http://0.0.0.0')
   .option('-u, --username <username>', '设置用户名 <your pc username>')
   .parse();
 
 const {
   port = PORT,
-  importpath = IMPORTERPATH,
+  importpath = IMPORTPATH,
   host = HOST,
   username = TUSERNAME || USERNAME || 'markdown-importer',
 } = program.opts();
 
 const url = `${host}:${port}`;
+if (importpath === undefined) {
+  new Error('请设置导入路径');
+}
+
+if (!fs.existsSync(path.resolve('.', importpath))) {
+  new Error(`${importpath} 不存在`);
+}
 
 const targetdir = path.resolve('.', importpath);
 if (!fs.existsSync(targetdir)) {
   new Error(`${targetdir} 不存在`);
 }
 
+console.log(targetdir);
+
 const files = readDirRecursive(targetdir);
+// TODO
+if (!files.length) {
+  new Error(chalk.red.bold('没有找到任何文件'));
+}
 
 const writefiles = new Map();
 
 // 遍历文件列表
 files.forEach((file) => {
+  // cli-progress
+  console.log(chalk.green.bold(`正在导入 ${importpath}...`));
   // 检查文件扩展名是否为.md，以过滤出Markdown文件
   const pattern = /[^\\/:*?"<>|\r\n]+(?=\.[^.\\]+$)/;
   let title = file.match(pattern)[0];
@@ -62,7 +77,6 @@ files.forEach((file) => {
     title = data.title;
   }
 
-  // @ts-ignore
   const filteredData = filterNonStringValues(data);
 
   // record files
