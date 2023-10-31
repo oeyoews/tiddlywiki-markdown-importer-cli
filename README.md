@@ -31,6 +31,7 @@ twmd -i content
 - [ ] 相对路径的图片路径处理
 - [ ] support markdown exporter (tiddlywiki 插件版本:  markdow exporter)
 - [x] 默认读取当前目录下的 `content` 目录
+- [ ] cli 自动发包
 
 ## NOTE
 

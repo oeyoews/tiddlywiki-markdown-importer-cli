@@ -10,6 +10,7 @@ import readDirRecursive from './getallfiles';
 import matter from 'gray-matter';
 import filterNonStringValues from './lib/filterfrontmatter';
 import { program } from 'commander';
+import cliProgress from 'cli-progress';
 
 dotenv.config();
 
@@ -22,41 +23,34 @@ program
   .option('-u, --username <username>', '设置用户名 <your pc username>')
   .parse();
 
-  // cli 中 dotenv 不可用
+// cli 中 dotenv 不可用
 const {
   port = PORT || 8000,
   importpath = IMPORTPATH || 'content',
   host = HOST || 'http://0.0.0.0',
   username = TUSERNAME || USERNAME || 'markdown-importer',
 } = program.opts();
-console.log(port, importpath, host, username);
 
 const url = `${host}:${port}`;
-if (importpath === undefined) {
-  new Error('请设置导入路径');
-}
-
-if (!fs.existsSync(path.resolve('.', importpath))) {
-  new Error(`${importpath} 不存在`);
-}
 
 const targetdir = path.resolve('.', importpath);
-if (!fs.existsSync(targetdir)) {
-  new Error(`${targetdir} 不存在`);
-}
-
-console.log(targetdir);
-
 const files = readDirRecursive(targetdir);
-// TODO
-if (!files.length) {
-  new Error(chalk.red.bold('没有找到任何文件'));
-}
+
+const progressBar = new cliProgress.SingleBar(
+  {
+    format: `${chalk.green('{bar}')} {percentage}% | {value}/{total} {title}`,
+    stopOnComplete: true,
+    barCompleteChar: '\u2588',
+    barIncompleteChar: '\u2591',
+    hideCursor: false,
+  },
+  cliProgress.Presets.shades_classic,
+);
 
 const writefiles = new Map();
 
 // 遍历文件列表
-files.forEach((file) => {
+files.forEach((file, index) => {
   // cli-progress
   // 检查文件扩展名是否为.md，以过滤出Markdown文件
   const pattern = /[^\\/:*?"<>|\r\n]+(?=\.[^.\\]+$)/;
@@ -64,27 +58,23 @@ files.forEach((file) => {
   const extname = path.extname(file);
   if (extname !== '.md' && extname !== '.markdown') return;
 
-  console.log(chalk.green.bold(`正在导入 ${file}`));
-
   const text = fs.readFileSync(file, 'utf-8');
   // TODO: content 首行不会被去除
   const { data, content } = matter(text);
   if (!data) return;
   let removednewlineContent = content;
 
-  // if (content.startsWith("\n")) {
-  //   removednewlineContent = content.replace(/^\n+/, "");
-  // }
-
   if (data?.title) {
     title = data.title;
   }
+
+  progressBar.start(files.length, index, { title });
 
   const filteredData = filterNonStringValues(data);
 
   // record files
   if (writefiles.has(title)) {
-    console.log(chalk.red.bold(`title: ${title} 已存在`));
+    // console.log(chalk.red.bold(`title: ${title} 已存在`));
     return;
   } else {
     writefiles.set(title, file);
@@ -117,11 +107,17 @@ files.forEach((file) => {
     })
     .then((data) => {
       if (data) {
-        console.log(chalk.red.bold(`Import of ${title} failed`));
+        // console.log(chalk.red.bold(`Import of ${title} failed`));
         return;
       } else {
         // @ts-ignore
         write(putTiddlerUrl, tiddler, title);
+      }
+    })
+    .then(() => {
+      progressBar.update(index + 1, { title });
+      if (index === files.length) {
+        progressBar.stop();
       }
     });
 });
