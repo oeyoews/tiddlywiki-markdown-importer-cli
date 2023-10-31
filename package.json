@@ -2,9 +2,13 @@
   "name": "tiddlywiki-markdown-importer-cli",
   "version": "1.0.0",
   "description": "tiddlywiki-markdown-importer-cli",
+  "bin": {
+    "twmd": "./dist/index.js"
+  },
   "main": "src/index.js",
   "scripts": {
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "build": "ncc build ./src/index.ts -o ./dist/ --minify --no-cache --no-source-map-register"
   },
   "keywords": [
     "markdown",
@@ -12,8 +16,9 @@
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "@types/node": "^20.8.9",
+    "@vercel/ncc": "^0.38.1",
     "chalk": "4",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
