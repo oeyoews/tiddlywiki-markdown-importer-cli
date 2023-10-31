@@ -32,8 +32,14 @@ const {
   host = HOST || 'http://0.0.0.0',
   username = TUSERNAME || USERNAME || 'markdown-importer',
 } = program.opts();
-
 const url = `${host}:${port}`;
+
+console.log(
+  chalk.green(`\n==================\nport: ${port}
+importpath: ${importpath}
+url: ${url}
+username: ${username}\n=====================\n`),
+);
 
 const targetdir = path.resolve('.', importpath);
 const files = readDirRecursive(targetdir);
@@ -51,73 +57,80 @@ const progressBar = new cliProgress.SingleBar(
 
 const writefiles = new Map();
 
-// 遍历文件列表
-files.forEach(({ filename: title, filetype, filePath }, index) => {
-  if (filetype !== '.md' && filetype !== '.markdown') return;
+fetch(url)
+  .then((res) => {
+    // TODO: 抑制错误输出
+    console.log(res.ok, 'is ok ?');
+    !res.ok && new Error('error');
+  })
+  .then(() => {
+    files.forEach(({ filename: title, filetype, filePath }, index) => {
+      if (filetype !== '.md' && filetype !== '.markdown') return;
 
-  const text = fs.readFileSync(filePath, 'utf-8');
-  // TODO: content 首行不会被去除
-  const { data, content } = matter(text);
-  if (!data) return;
+      const text = fs.readFileSync(filePath, 'utf-8');
+      // TODO: content 首行不会被去除
+      const { data, content } = matter(text);
+      if (!data) return;
 
-  if (data?.title) {
-    title = data.title;
-  }
-
-  progressBar.start(files.length, index, { title });
-
-  const filteredData = filterNonStringValues(data);
-
-  // record files
-  if (writefiles.has(title)) {
-    // console.log(chalk.red.bold(`title: ${title} 已存在`));
-    return;
-  } else {
-    writefiles.set(title, filePath);
-  }
-  const { birthtime, mtime } = fs.statSync(filePath);
-  const created = formattime(birthtime);
-  const modified = formattime(mtime);
-
-  // TODO: 测试是否可以自动递归目录
-  const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, url);
-
-  const tiddler = {
-    text: content,
-    type: 'text/markdown',
-    created,
-    creator: username,
-    modified,
-  };
-
-  try {
-    Object.assign(tiddler, filteredData);
-  } catch (e) {
-    e;
-  }
-
-  fetch(putTiddlerUrl)
-    .then((res) => {
-      let data;
-      if (res.ok) {
-        data = res.json();
-        return data;
+      if (data?.title) {
+        title = data.title;
       }
-      return false;
-    })
-    .then((data) => {
-      if (data) {
-        // console.log(chalk.red.bold(`Import of ${title} failed`));
+
+      progressBar.start(files.length, index, { title });
+
+      const filteredData = filterNonStringValues(data);
+
+      // record files
+      if (writefiles.has(title)) {
+        // console.log(chalk.red.bold(`title: ${title} 已存在`));
         return;
       } else {
-        // @ts-ignore
-        write(putTiddlerUrl, tiddler, title);
+        writefiles.set(title, filePath);
       }
-    })
-    .then(() => {
-      progressBar.update(index + 1, { title });
-      if (index === files.length) {
-        progressBar.stop();
+      const { birthtime, mtime } = fs.statSync(filePath);
+      const created = formattime(birthtime);
+      const modified = formattime(mtime);
+
+      // TODO: 测试是否可以自动递归目录
+      const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, url);
+
+      const tiddler = {
+        text: content,
+        type: 'text/markdown',
+        created,
+        creator: username,
+        modified,
+      };
+
+      try {
+        Object.assign(tiddler, filteredData);
+      } catch (e) {
+        e;
       }
+
+      fetch(putTiddlerUrl)
+        .then((res) => {
+          let data;
+          if (res.ok) {
+            data = res.json();
+            return data;
+          }
+          return false;
+        })
+        .then((data) => {
+          if (data) {
+            // console.log(chalk.red.bold(`Import of ${title} failed`));
+            return;
+          } else {
+            // @ts-ignore
+            write(putTiddlerUrl, tiddler, title);
+          }
+        })
+        .then(() => {
+          progressBar.update(index + 1, { title });
+          if (index === files.length) {
+            progressBar.stop();
+          }
+        });
     });
-});
+  });

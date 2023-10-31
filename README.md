@@ -21,6 +21,7 @@ twmd -i /your/markdonw/folder
 
 ## TODO
 
+* [x] url test ping
 - [x] 写入文件的创建,修改时间
 - [x] suport import markdown file
 - [x] suport export markdown file(tiddlywiki 插件版本: markdown obsidian manager)
@@ -29,6 +30,7 @@ twmd -i /your/markdonw/folder
 - [x] release npm package
 - [x] supoprt parse yml
 - [x] 默认读取当前目录下的 `content` 目录
+- [ ] 名字错乱(支持导入md&&md.meta)
 - [ ] yml 异常语法校验, 异常捕获
 - [ ] windows 下路径有问题
 - [ ] 相对路径的图片路径处理
