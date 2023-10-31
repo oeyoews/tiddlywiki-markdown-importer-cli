@@ -11,7 +11,8 @@
 - [x] suport export markdown file(tiddlywiki 插件版本: markdown obsidian manager)
 - [ ] ncc 打包成cli, 支持参数, 配置文件读取
 - [ ] 相对路径的图片路径处理
-- [ ] supoprt parse yml(tiddlywiki 插件版本:  markdow exporter)
+- [x] supoprt parse yml
+- [ ] support markdown exporter (tiddlywiki 插件版本:  markdow exporter)
 
 ## NOTE
 

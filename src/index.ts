@@ -5,6 +5,8 @@ import write from "@/write";
 import dotenv from "dotenv";
 import formattime from "@/formattime";
 import readDirRecursive from "@/getallfiles";
+import matter from "gray-matter";
+import filterNonStringValues from "@/lib/filterfrontmatter";
 
 dotenv.config();
 
@@ -28,7 +30,26 @@ const writefiles = new Map();
 files.forEach((file) => {
   // 检查文件扩展名是否为.md，以过滤出Markdown文件
   const pattern = /[^\\/:*?"<>|\r\n]+(?=\.[^.\\]+$)/;
-  const title = file.match(pattern)[0];
+  let title = file.match(pattern)[0];
+  const extname = path.extname(file);
+  if (extname !== ".md" && extname !== ".markdown") return;
+
+  const text = fs.readFileSync(file, "utf-8");
+  // TODO: content 首行不会被去除
+  const { data, content } = matter(text);
+  if (!data) return;
+  let removednewlineContent = content;
+
+  // if (content.startsWith("\n")) {
+  //   removednewlineContent = content.replace(/^\n+/, "");
+  // }
+
+  if (data?.title) {
+    title = data.title;
+  }
+
+  const filteredData = filterNonStringValues(data);
+
   // record files
   if (writefiles.has(title)) {
     console.log(chalk.red.bold(`title: ${title} 已存在`));
@@ -36,11 +57,6 @@ files.forEach((file) => {
   } else {
     writefiles.set(title, file);
   }
-  const extname = path.extname(file);
-  if (extname !== ".md" && extname !== ".markdown") return;
-
-  const text = fs.readFileSync(file, "utf-8");
-
   const { birthtime, mtime } = fs.statSync(file);
   const created = formattime(birthtime);
   const modified = formattime(mtime);
@@ -50,13 +66,14 @@ files.forEach((file) => {
   const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, url);
 
   const tiddler = {
-    title, // 可以省略, puttiddlerurl 决定这个
-    text,
+    text: content,
     type: "text/markdown",
     created,
     creator,
     modified,
   };
+
+  Object.assign(tiddler, filteredData);
 
   fetch(putTiddlerUrl)
     .then((res) => {
