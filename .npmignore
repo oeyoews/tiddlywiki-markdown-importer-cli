@@ -33,3 +33,5 @@ tests/
 !.vscode/settings.json
 !.vscode/extensions.json
 .idea/
+src/
+content/

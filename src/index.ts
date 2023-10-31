@@ -1,3 +1,4 @@
+//@ts-nocheck
 import fs from "fs";
 import path from "path";
 import chalk from "chalk";
@@ -7,22 +8,33 @@ import formattime from "@/formattime";
 import readDirRecursive from "@/getallfiles";
 import matter from "gray-matter";
 import filterNonStringValues from "@/lib/filterfrontmatter";
+import { program } from "commander";
 
 dotenv.config();
 
 const { PORT, IMPORTERPATH, HOST, USERNAME, TUSERNAME } = process.env;
 
-const markdownImporterPath = IMPORTERPATH || "content";
-const port = PORT || 8000;
-const host = HOST || "http://localhost";
+program
+  .option("-p, --port <port>", "设置端口号 <8000>")
+  .option("-i, --importerpath <importpath>", "设置导入路径 <content>")
+  .option("-H, --host <host>", "设置主机名: http://0.0.0.0")
+  .option("-u, --username <username>", "设置用户名 <your pc username>")
+  .parse();
+
+const {
+  port = PORT,
+  importpath = IMPORTERPATH,
+  host = HOST,
+  username = TUSERNAME || USERNAME || "markdown-importer",
+} = program.opts();
 
 const url = `${host}:${port}`;
 
-if (!fs.existsSync(markdownImporterPath)) {
-  new Error(`${markdownImporterPath} 不存在`);
+if (!fs.existsSync(importpath)) {
+  new Error(`${importpath} 不存在`);
 }
 
-const files = readDirRecursive(markdownImporterPath);
+const files = readDirRecursive(importpath);
 
 const writefiles = new Map();
 
@@ -60,7 +72,6 @@ files.forEach((file) => {
   const { birthtime, mtime } = fs.statSync(file);
   const created = formattime(birthtime);
   const modified = formattime(mtime);
-  const creator = TUSERNAME || USERNAME || "markdown-importer";
 
   // TODO: 测试是否可以自动递归目录
   const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, url);
@@ -69,7 +80,7 @@ files.forEach((file) => {
     text: content,
     type: "text/markdown",
     created,
-    creator,
+    creator: username,
     modified,
   };
 
