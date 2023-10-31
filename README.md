@@ -14,6 +14,7 @@
 - [ ] 相对路径的图片路径处理
 - [x] supoprt parse yml
 - [ ] support markdown exporter (tiddlywiki 插件版本:  markdow exporter)
+- [ ] 默认读取当前目录下的 `markdown` 目录
 
 ## NOTE
 
