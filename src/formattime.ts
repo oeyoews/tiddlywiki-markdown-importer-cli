@@ -4,6 +4,6 @@ import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 
 export default (time) => {
-  const timeFormat = "YYYYMMDDHHMMssSSS";
+  const timeFormat = "YYYYMMDDHHmmss";
   return dayjs(time).utc().format(timeFormat);
 };

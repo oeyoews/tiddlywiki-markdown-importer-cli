@@ -13,7 +13,7 @@ dotenv.config();
 // https://github.com/Jermolene/TiddlyWiki5/blob/4b56cb42983d4134715eb7fe7b083fdcc04980f0/core/modules/server/server.js#L31
 // https://github.com/Jermolene/TiddlyWiki5/blob/4b56cb42983d4134715eb7fe7b083fdcc04980f0/core/modules/server/routes/put-tiddler.js
 
-const { PORT, IMPORTERPATH, HOST } = process.env;
+const { PORT, IMPORTERPATH, HOST, USERNAME, TUSERNAME } = process.env;
 
 const markdownImporterPath = IMPORTERPATH || "content";
 const port = PORT || 8000;
@@ -23,41 +23,44 @@ const url = `${host}:${port}`;
 
 // test
 const title = "index";
-const text = title;
+const filename = `${markdownImporterPath}/${title}.md`;
+const text = fs.readFileSync(filename, "utf-8");
 
 if (!fs.existsSync(markdownImporterPath)) {
   console.log(`${markdownImporterPath} 不存在`);
 }
 
 // TODO: try catch
-const { birthtime, mtime } = fs.statSync(`${markdownImporterPath}/${title}.md`);
+const { birthtime, mtime } = fs.statSync(filename);
 
-// @ts-ignore
 const created = formattime(birthtime);
 const modified = formattime(mtime);
+const creator = TUSERNAME || USERNAME || "markdown-importer"; // 这一步会关系到用户隐私
 
 const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, url);
 
 const tiddler = {
   title,
   text,
-  type: "text/markdown",
+  type: "text/markdown", // TODO: image/png image/jpg 特殊处理
   created,
-  // creator,
+  creator,
   modified,
-  tags: "",
+  // tags: "", // TODO
 };
 
 fetch(putTiddlerUrl)
   .then((res) => {
+    let data;
     if (res.ok) {
-      const data = res.json();
+      data = res.json();
       return data;
     }
     return false;
   })
   .then((data) => {
     if (data) {
+      console.log(data);
       const { title, text, type, created, creator, modified, tags } = data;
       console.log(chalk.red.bold("import failed"));
       return;
