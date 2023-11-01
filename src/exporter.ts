@@ -6,7 +6,13 @@ import slugify from 'slugify';
 
 const baseurl = 'http://0.0.0.0:8000';
 const markdowntype = ['text/markdown', 'text/x-markdown'];
-const exportPath = 'backup';
+const exportPath = 'content';
+const fileExtension = '.md'; // .mdx
+
+if (fs.existsSync(exportPath)) {
+  fs.rmSync(exportPath, { recursive: true, force: true });
+}
+fs.mkdirSync(exportPath);
 
 // TODO: 异常处理
 const tiddlersjson = new URL(`recipes/default/tiddlers.json`, baseurl);
@@ -43,24 +49,23 @@ function getfile(title: string) {
         log(`获取 ${title} 失败`, 'red');
         return;
       }
-      const { text, fields, ...frontmatter } = data;
 
-      if (!markdowntype.includes(frontmatter?.type)) {
+      const { text, fiedls, ...restfields } = data;
+
+      if (!markdowntype.includes(restfields?.type)) {
         log(`${title} 不是 markdown 类型`, 'red');
         return;
       }
 
-      // TODO: 过滤空的属性
-      const mergedfrontmatter = Object.assign({}, frontmatter, fields);
-      const content = matter.stringify(
-        { content: `\n${text}` },
-        mergedfrontmatter,
-      );
+      // 导出的字段使用原生格式, 不做任何修改, 尽量让第三方框架适配这个格式, 而不是在这里修改
+      const frontmatter = Object.assign({}, restfields, fiedls);
+
+      const content = matter.stringify({ content: `\n${text}` }, frontmatter);
 
       const fileName = `${slugify(title, {
         lower: true,
         remove: /[*+~./()'"!:@]/g,
-      })}.md`;
+      })}${fileExtension}`;
       const targetfilename = path.join(exportPath, fileName);
 
       if (!fs.existsSync(targetfilename)) {
