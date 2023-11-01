@@ -1,17 +1,12 @@
 import matter from 'gray-matter';
 import fs from 'fs';
-import chalk from 'chalk';
 import path from 'path';
+import { log } from './lib/log';
 
 const baseurl = 'http://0.0.0.0:8000';
 const title = '关于梦';
 const type = ['text/markdown', 'text/x-markdown'];
 const exportPath = 'content';
-
-const log = (type: string, text: string) => {
-  // @ts-ignore
-  return console.log(chalk?.[type]?.bold(text));
-};
 
 // TODO: 异常处理
 const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, baseurl);
