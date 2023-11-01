@@ -60,12 +60,15 @@ const writefiles = new Map();
 fetch(url)
   .then((res) => {
     // TODO: 抑制错误输出
-    !res.ok && new Error('error');
+    if (!res.ok) {
+      throw new Error('error');
+    }
   })
   .then(() => {
-    files.forEach(({ filename: title, filetype, filePath }, index) => {
-      if (filetype !== '.md' && filetype !== '.markdown') return;
-
+    const markdownFiles = files.filter(
+      ({ filetype }) => filetype === '.md' || filetype === '.markdown',
+    );
+    markdownFiles.forEach(({ filename: title, filetype, filePath }, index) => {
       const text = fs.readFileSync(filePath, 'utf-8');
       // TODO: content 首行不会被去除
       const { data, content } = matter(text);
@@ -75,7 +78,7 @@ fetch(url)
         title = data.title;
       }
 
-      progressBar.start(files.length, index, { title });
+      progressBar.start(markdownFiles.length, index, { title });
 
       const filteredData = filterNonStringValues(data);
 
@@ -127,9 +130,7 @@ fetch(url)
         })
         .then(() => {
           progressBar.update(index + 1, { title });
-          if (index === files.length) {
-            progressBar.stop();
-          }
         });
     });
-  });
+  })
+  .then(() => progressBar.stop());
