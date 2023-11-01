@@ -46,14 +46,13 @@ const headers = new Headers();
 
 // https://bramchen.github.io/tw5-docs/zh-Hans/#ListenCommand
 // https://github.com/Jermolene/TiddlyWiki5/pull/7471
+// https://talk.tiddlywiki.org/t/question-how-to-render-json-instead-of-html-and-save-the-results-to-a-json-file/4910/15
 
 const loginurl = new URL(`status`, baseurl);
 
-fetch(loginurl, {
-
-}).then((res) => {
-  console.log(res)
-})
+fetch(loginurl, {}).then((res) => {
+  console.log(res);
+});
 
 // fetch(loginurl, {}).then((res) => {
 //   if (res.statusText === '  Authentication required') log('需要认证', 'red');
