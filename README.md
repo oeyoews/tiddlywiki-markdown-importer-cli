@@ -59,11 +59,12 @@ twmd export -i content -p 8080 # tw -> md
 ## Links
 
 * https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Get%20Server%20Status
-* headers.append('Authorization', 'Basic ' + btoa(user + ':' + password));
 * https://bramchen.github.io/tw5-docs/zh-Hans/#ListenCommand
 * https://github.com/Jermolene/TiddlyWiki5/pull/7471
 * https://talk.tiddlywiki.org/t/question-how-to-render-json-instead-of-html-and-save-the-results-to-a-json-file/4910/15
 
+
+<!-- * `headers.append('Authorization', 'Basic ' + btoa(user + ':' + password));` -->
 
 <!-- // 针对本地太微nodejs(无密码)实例
 // 写入, 导出, 更新, 查询, 删
