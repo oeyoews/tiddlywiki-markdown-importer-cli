@@ -2,18 +2,19 @@ import fs from 'fs';
 import matter from 'gray-matter';
 import filterNonStringValues from '../lib/filterfrontmatter';
 import formattime from '../formattime';
+import importer from '../importer';
+import { log } from '../lib/log';
 
 export function importfile(
   title: string,
   filePath: string,
   index: number,
   writefiles: any,
-  url: string,
+  baseurl: string,
   username: string,
   progressBar: any,
 ) {
   const text = fs.readFileSync(filePath, 'utf-8');
-  // TODO: content 首行不会被去除
   const { data, content } = matter(text);
   if (!data) return;
 
@@ -23,7 +24,6 @@ export function importfile(
 
   const filteredData = filterNonStringValues(data);
 
-  // record files
   if (writefiles.has(title)) {
     return;
   } else {
@@ -33,11 +33,10 @@ export function importfile(
   const created = formattime(birthtime);
   const modified = formattime(mtime);
 
-  // TODO: 测试是否可以自动递归目录
-  const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, url);
+  const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, baseurl);
 
   const tiddler = {
-    text: content,
+    text: content.trim(), // 去除首行换行符
     type: 'text/markdown',
     created,
     creator: username,
@@ -61,10 +60,11 @@ export function importfile(
     })
     .then((data) => {
       if (data) {
+        log(`${title} 已存在`, 'red');
         return;
       } else {
         // @ts-ignore
-        write(putTiddlerUrl, tiddler, title);
+        importer(putTiddlerUrl, tiddler, title);
         progressBar.update(index, { title });
       }
     });

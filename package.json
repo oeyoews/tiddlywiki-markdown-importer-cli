@@ -1,6 +1,6 @@
 {
   "name": "tiddlywiki-markdown-importer-exporter-cli",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "tiddlywiki-markdown-importer-exporter-cli",
   "bin": {
     "twmd": "./dist/index.js"
@@ -28,7 +28,6 @@
     "cli-progress": "^3.12.0",
     "commander": "^11.1.0",
     "dayjs": "^1.11.10",
-    "dotenv": "^16.3.1",
     "gray-matter": "^4.0.3",
     "prettier": "^3.0.3",
     "slugify": "^1.6.6",

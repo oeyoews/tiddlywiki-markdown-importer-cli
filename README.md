@@ -32,6 +32,7 @@ twmd -i /your/markdonw/folder
 - [x] supoprt parse yml
 - [x] 默认读取当前目录下的 `content` 目录
 - [x] 如何本地测试npm package link?
+- [ ] exporter suppor cli
 - [ ] 名字错乱(支持导入md&&md.meta)
 - [ ] yml 异常语法校验, 异常捕获
 - [ ] windows 下路径有问题
@@ -42,7 +43,7 @@ twmd -i /your/markdonw/folder
 - [ ] 重构代码
 - [ ] etag ??
 - [ ] 支持验证
-- [ ] support wikitext to markdown: 如果用户使用到了macro等高级tw语法, 这一步不可能也不能做到
+- [ ] support wikitext to markdown: 如果用户使用到了macro等高级tw语法, 这一步不可能也不能做到, tid 的meta信息可以借助gray-matter 来处理
 - [ ] 接入三方api(notion)
 - [ ] 浏览器扩展
 

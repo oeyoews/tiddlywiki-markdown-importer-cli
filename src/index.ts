@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import dotenv from 'dotenv';
 import readDirRecursive from './getallfiles';
 import { program } from 'commander';
 import cliProgress from 'cli-progress';
@@ -11,10 +9,7 @@ import { version } from '../package.json';
 import { log } from './lib/log';
 import { importfile } from './core/importfile';
 
-dotenv.config();
-
-const { PORT, IMPORTPATH, HOST, USERNAME, TUSERNAME } = process.env;
-
+// https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Put%20Tiddler
 program
   .option('-p, --port <port>', '设置端口号 <8080>')
   .option('-i, --importpath <importpath>', '设置导入路径 <content>')
@@ -25,27 +20,29 @@ program
 
 // cli 中 dotenv 不可用
 const {
-  port = PORT || 8080,
-  importpath = IMPORTPATH || 'content',
-  host = HOST || 'http://0.0.0.0',
-  username = TUSERNAME || USERNAME || 'markdown-importer',
+  port = 8080,
+  importpath = 'content',
+  host = 'http://0.0.0.0',
+  username = process.env.USERNAME || 'markdown-importer',
 } = program.opts();
-const url = `${host}:${port}`;
+
+const markdowntypes = ['.md', '.markdown'];
+
+const baseurl = `${host}:${port}`;
 
 log(
   `\n==================\nport: ${port}
 importpath: ${importpath}
-url: ${url}
+baseurl: ${baseurl}
 username: ${username}\n=====================\n`,
 );
 
 const targetdir = path.resolve('.', importpath);
 const files = readDirRecursive(targetdir);
-const markdownFiles = files.filter(
-  ({ filetype }) => filetype === '.md' || filetype === '.markdown',
+const markdownFiles = files.filter(({ filetype }) =>
+  markdowntypes.includes(filetype),
 );
 
-// https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Put%20Tiddler
 const progressBar = new cliProgress.SingleBar(
   {
     format: `${chalk.green(
@@ -62,9 +59,10 @@ progressBar.start(markdownFiles.length, 0, { title: '' });
 
 const writefiles = new Map();
 
-fetch(url)
+fetch(baseurl)
   .then((res) => {
     // TODO: 验证
+    // 是否连通
     if (!res.ok) {
       throw new Error('error');
     }
@@ -77,7 +75,7 @@ fetch(url)
         filePath,
         index,
         writefiles,
-        url,
+        baseurl,
         username,
         progressBar,
       );

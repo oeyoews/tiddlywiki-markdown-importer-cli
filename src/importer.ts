@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import { log } from './lib/log';
 
 export default (url: URL, tiddler: { title: string }, title: string) => {
   const body = JSON.stringify(tiddler);
@@ -12,6 +12,6 @@ export default (url: URL, tiddler: { title: string }, title: string) => {
     body,
   };
   fetch(url, requestOptions).then((res) => {
-    if (!res.ok) console.log(chalk.red.bold(`写入 ${title} 失败`));
+    if (!res.ok) log(`写入 ${title} 失败`, 'red');
   });
 };

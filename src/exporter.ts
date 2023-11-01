@@ -3,7 +3,6 @@ import { log } from './lib/log';
 import cliProgress from 'cli-progress';
 import chalk from 'chalk';
 import { getfile } from './core/exportfile';
-import { getStatus } from './getstatus';
 
 const host = 'http://0.0.0.0';
 const port = 8000;
@@ -32,7 +31,7 @@ if (fs.existsSync(exportPath)) {
 }
 fs.mkdirSync(exportPath);
 
-const tiddlersjson = new URL(`/recipes/default/tiddlers.json`, baseurl);
+const tiddlersjsonurl = new URL(`/recipes/default/tiddlers.json`, baseurl);
 
 const markdownfiletitles: string[] = [];
 
@@ -45,7 +44,7 @@ const markdownfiletitles: string[] = [];
 // https://github.com/Jermolene/TiddlyWiki5/pull/7471
 // https://talk.tiddlywiki.org/t/question-how-to-render-json-instead-of-html-and-save-the-results-to-a-json-file/4910/15
 
-fetch(tiddlersjson)
+fetch(tiddlersjsonurl)
   .then((res) => {
     return res.json();
   })
