@@ -32,12 +32,12 @@ const {
   host = HOST || 'http://0.0.0.0',
   username = TUSERNAME || USERNAME || 'markdown-importer',
 } = program.opts();
-const url = `${host}:${port}`;
+const baseurl = `${host}:${port}`;
 
 console.log(
   chalk.green(`\n==================\nport: ${port}
 importpath: ${importpath}
-url: ${url}
+url: ${baseurl}
 username: ${username}\n=====================\n`),
 );
 
@@ -57,79 +57,78 @@ const progressBar = new cliProgress.SingleBar(
 
 const writefiles = new Map();
 
-fetch(url)
-  .then((res) => {
-    // TODO: 抑制错误输出
-    !res.ok && new Error('error');
-  })
-  .then(() => {
-    files.forEach(({ filename: title, filetype, filePath }, index) => {
-      if (filetype !== '.md' && filetype !== '.markdown') return;
+const main = async () => {
+  const response = await fetch(baseurl);
+  // TODO
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${baseurl}. Status: ${response.status}`);
+  }
 
-      const text = fs.readFileSync(filePath, 'utf-8');
-      // TODO: content 首行不会被去除
-      const { data, content } = matter(text);
-      if (!data) return;
+  const markdownFiles = files.filter(
+    ({ filetype }) => filetype === '.md' || filetype === '.markdown',
+  );
 
-      if (data?.title) {
-        title = data.title;
-      }
+  markdownFiles.forEach(({ filename: title, filePath }, index) => {
+    const { birthtime, mtime } = fs.statSync(filePath);
+    const created = formattime(birthtime);
+    const modified = formattime(mtime);
+    const text = fs.readFileSync(filePath, 'utf-8');
+    // TODO: content 首行不会被去除
+    const { data, content } = matter(text);
 
-      progressBar.start(files.length, index, { title });
+    if (data?.title) {
+      title = data.title;
+    }
+    progressBar.start(markdownFiles.length, index, { title });
 
-      const filteredData = filterNonStringValues(data);
+    const filteredData = filterNonStringValues(data);
 
-      // record files
-      if (writefiles.has(title)) {
-        // console.log(chalk.red.bold(`title: ${title} 已存在`));
-        return;
-      } else {
-        writefiles.set(title, filePath);
-      }
-      const { birthtime, mtime } = fs.statSync(filePath);
-      const created = formattime(birthtime);
-      const modified = formattime(mtime);
+    // record files
+    if (writefiles.has(title)) {
+      console.log(chalk.red.bold(`title: ${title} 已存在`));
+      return;
+    } else {
+      writefiles.set(title, filePath);
+    }
 
-      // TODO: 测试是否可以自动递归目录
-      const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, url);
+    const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, baseurl);
 
-      const tiddler = {
-        text: content,
-        type: 'text/markdown',
-        created,
-        creator: username,
-        modified,
-      };
+    const tiddler = {
+      text: content,
+      type: 'text/markdown',
+      created,
+      creator: username,
+      modified,
+    };
 
-      try {
-        Object.assign(tiddler, filteredData);
-      } catch (e) {
-        e;
-      }
+    // TODO
+    try {
+      Object.assign(tiddler, filteredData);
+    } catch (e) {
+      console.log(e);
+    }
 
-      fetch(putTiddlerUrl)
-        .then((res) => {
-          let data;
-          if (res.ok) {
-            data = res.json();
-            return data;
-          }
-          return false;
-        })
-        .then((data) => {
-          if (data) {
-            // console.log(chalk.red.bold(`Import of ${title} failed`));
-            return;
-          } else {
-            // @ts-ignore
-            write(putTiddlerUrl, tiddler, title);
-          }
-        })
-        .then(() => {
-          progressBar.update(index + 1, { title });
-          if (index === files.length) {
-            progressBar.stop();
-          }
-        });
-    });
+    fetch(putTiddlerUrl)
+      .then((res) => {
+        let data;
+        if (res.ok) {
+          data = res.json();
+          return data;
+        }
+        return false;
+      })
+      .then((data) => {
+        if (data) {
+          console.log(chalk.red.bold(`Import of ${title} failed`));
+          return;
+        }
+        // @ts-ignore
+        write(putTiddlerUrl, tiddler, title);
+        progressBar.update(index + 1, { title });
+      });
   });
+};
+
+main().then(() => {
+  progressBar.stop();
+});
