@@ -1,17 +1,28 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
-import path from 'path';
-import readDirRecursive from './lib/getallfiles';
 import { program } from 'commander';
 import { version } from '../package.json';
 import { log } from './lib/log';
-import { progressBar } from './lib/progressbar';
 
-import { importFile } from './core/importfile';
-import { exportFile } from './core/exportfile';
+import importer from './importer';
+import exporter from './exporter';
 
-// index -> importfiles -> importer
+let actiontype: any = null;
+
+program
+  .command('import')
+  .description('md -> tw')
+  .action(() => {
+    actiontype = 'import';
+  });
+
+program
+  .command('export')
+  .description('tw -> md')
+  .action(() => {
+    actiontype = 'export';
+  });
+
 // https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Put%20Tiddler
 program
   .option('-p, --port <port>', '设置端口号 <8080>')
@@ -21,7 +32,6 @@ program
   .version(version, '-v, --version', '显示版本')
   .parse();
 
-// cli 中 dotenv 不可用
 const {
   port = 8080,
   twpath = 'content',
@@ -29,44 +39,16 @@ const {
   username = process.env.USERNAME || 'markdown-importer',
 } = program.opts();
 
-const baseurl = `${host}:${port}`;
-const markdowntype = ['text/markdown', 'text/x-markdown'];
-const fileExtension = '.md'; // .mdx
-const markdowntypes = ['.md', '.markdown'];
-
 log(
   `\n==================\nport: ${port}
 twpath: ${twpath}
-baseurl: ${baseurl}
+host: ${host}
 username: ${username}\n=====================\n`,
 );
 
-// 导入/导出的文件夹
-const markdowndir = path.resolve('.', twpath);
+const actions: any = {
+  import: importer,
+  export: exporter,
+};
 
-// TODO: if import , err, if export , create dir
-if (!fs.existsSync(twpath)) {
-  log(`文件夹 ${twpath} 不存在`, 'red');
-  throw new Error('文件夹不存在');
-}
-
-// importer
-const files = readDirRecursive(markdowndir);
-const markdownFiles = files.filter(({ filetype }) =>
-  markdowntypes.includes(filetype),
-);
-
-// start cli progress
-progressBar.start(markdownFiles.length, 0, { title: '', type: '' });
-
-const writefiles = new Map();
-
-fetch(baseurl)
-  .then(() => {
-    markdownFiles.forEach(({ filename: title, filePath }, index) => {
-      progressBar.update(index, { title, type: 'Importing:' });
-      importFile(baseurl, filePath, title, username);
-      progressBar.update(index + 1, { title });
-    });
-  })
-  .then(() => progressBar.stop());
+actions[actiontype]({ host, port, twpath, username });
