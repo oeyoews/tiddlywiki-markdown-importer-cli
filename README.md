@@ -38,6 +38,7 @@ twmd -i /your/markdonw/folder
 - [ ] support markdown exporter (tiddlywiki 插件版本:  markdow exporter)
 - [ ] cli 自动发包
 - [ ] axios 打包200k
+- [ ] 重构代码
 
 ## NOTE
 
