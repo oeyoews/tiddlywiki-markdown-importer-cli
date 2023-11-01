@@ -7,18 +7,16 @@ import fs from 'fs';
 
 /**
  * @description: 从服务端 导出 tiddler 为 markdown
+ * @param baseurl
+ * @param twpath
  * @param title
  * @param markdowntype
- * @param baseurl
- * @param fileExtension
- * @param exportPath
  */
 export function exportFile(
+  baseurl: string,
+  twpath: string,
   title: string,
   markdowntype: any[],
-  baseurl: string,
-  fileExtension: string,
-  exportPath: string,
 ) {
   const putTiddlerUrl = new URL(`/recipes/default/tiddlers/${title}`, baseurl);
   fetch(putTiddlerUrl)
@@ -73,8 +71,8 @@ export function exportFile(
       const fileName = `${slugify(title, {
         lower: true,
         remove: /[*+~./()'"!:@]/g,
-      })}${fileExtension}`;
-      const targetfilename = path.join(exportPath, fileName);
+      })}.md`;
+      const targetfilename = path.join(twpath, fileName);
 
       if (!fs.existsSync(targetfilename)) {
         fs.writeFileSync(targetfilename, content);

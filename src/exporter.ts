@@ -13,7 +13,7 @@ program
   .version(version, '-v, --version', '显示版本')
   .parse();
 
-// cli 中 dotenv 不可用
+// exporter -> exporterfile
 const {
   port = 8080,
   twpath = 'content',
@@ -23,7 +23,13 @@ const {
 
 const baseurl = `${host}:${port}`;
 const markdowntype = ['text/markdown', 'text/x-markdown'];
-const fileExtension = '.md'; // .mdx
+
+log(
+  `\n==================\nport: ${port}
+twpath: ${twpath}
+baseurl: ${baseurl}
+username: ${username}\n=====================\n`,
+);
 
 // 如果你构建了在线的tiddlers.json, 也可以直接使用那个地址, 可以使用tiddlyhost 测试, 默认提供tiddlers.json
 // https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Get%20All%20Tiddlers
@@ -56,7 +62,7 @@ fetch(tiddlersjsonurl)
         title,
         type: '',
       });
-      exportFile(title, markdowntype, baseurl, fileExtension, twpath);
+      exportFile(baseurl, twpath, title, markdowntype);
       progressBar.update(index + 1, { title, type: 'Exporting:' });
     });
   })

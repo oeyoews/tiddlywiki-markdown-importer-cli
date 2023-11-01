@@ -6,8 +6,10 @@ import readDirRecursive from './lib/getallfiles';
 import { program } from 'commander';
 import { version } from '../package.json';
 import { log } from './lib/log';
-import { importFile } from './core/importfile';
 import { progressBar } from './lib/progressbar';
+
+import { importFile } from './core/importfile';
+import { exportFile } from './core/exportfile';
 
 // index -> importfiles -> importer
 // https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Put%20Tiddler
@@ -27,8 +29,10 @@ const {
   username = process.env.USERNAME || 'markdown-importer',
 } = program.opts();
 
-const markdowntypes = ['.md', '.markdown'];
 const baseurl = `${host}:${port}`;
+const markdowntype = ['text/markdown', 'text/x-markdown'];
+const fileExtension = '.md'; // .mdx
+const markdowntypes = ['.md', '.markdown'];
 
 log(
   `\n==================\nport: ${port}
@@ -37,18 +41,25 @@ baseurl: ${baseurl}
 username: ${username}\n=====================\n`,
 );
 
-const targetdir = path.resolve('.', twpath);
-const files = readDirRecursive(targetdir);
-const markdownFiles = files.filter(({ filetype }) =>
-  markdowntypes.includes(filetype),
-);
+// 导入/导出的文件夹
+const markdowndir = path.resolve('.', twpath);
 
+// TODO: if import , err, if export , create dir
 if (!fs.existsSync(twpath)) {
   log(`文件夹 ${twpath} 不存在`, 'red');
   throw new Error('文件夹不存在');
 }
 
+// importer
+const files = readDirRecursive(markdowndir);
+const markdownFiles = files.filter(({ filetype }) =>
+  markdowntypes.includes(filetype),
+);
+
+// start cli progress
 progressBar.start(markdownFiles.length, 0, { title: '', type: '' });
+
+const writefiles = new Map();
 
 fetch(baseurl)
   .then(() => {

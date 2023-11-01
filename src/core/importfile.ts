@@ -6,24 +6,19 @@ import { log } from '../lib/log';
 
 /**
  * @description 从本地 markdown 文件导入 tiddler
- * @param title
- * @param filePath
- * @param index
- * @param writefiles
  * @param baseurl
+ * @param filePath
+ * @param title
  * @param username
- * @param progressBar
  * @returns
  */
 export function importFile(
-  title: string,
-  filePath: string,
-  index: number,
-  writefiles: any,
   baseurl: string,
+  filePath: string,
+  title: string,
   username: string,
-  progressBar: any,
 ) {
+  const importedFilesRecord = new Map();
   const text = fs.readFileSync(filePath, 'utf-8');
   const { data, content } = matter(text);
   if (!data) return;
@@ -34,10 +29,11 @@ export function importFile(
 
   const filteredData = filterNonStringValues(data);
 
-  if (writefiles.has(title)) {
+  if (importedFilesRecord.has(title)) {
+    // 避免一次导入多个相同名字的文件
     return;
   } else {
-    writefiles.set(title, filePath);
+    importedFilesRecord.set(title, filePath);
   }
   const { birthtime, mtime } = fs.statSync(filePath);
   const created = formattime(birthtime);
@@ -75,7 +71,6 @@ export function importFile(
       } else {
         // @ts-ignore
         writefile(putTiddlerUrl, tiddler, title);
-        progressBar.update(index, { title });
       }
     });
 }
