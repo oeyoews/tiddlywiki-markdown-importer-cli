@@ -1,4 +1,5 @@
 import { log } from '../lib/log';
+import dayjs from 'dayjs';
 import matter from 'gray-matter';
 import slugify from 'slugify';
 import path from 'path';
@@ -23,17 +24,43 @@ export function getfile(
         return;
       }
 
-      const { text, fiedls, ...restfields } = data;
+      const { text, fiedls, ...frontmatter } = data;
 
-      if (!markdowntype.includes(restfields?.type)) {
+      if (!markdowntype.includes(frontmatter?.type)) {
         log(`${title} 不是 markdown 类型`, 'red');
         return;
       }
 
-      // 导出的字段使用原生格式, 不做任何修改, 尽量让第三方框架适配这个格式, 而不是在这里修改
-      const frontmatter = Object.assign({}, restfields, fiedls);
+      // update date field
+      frontmatter.date = dayjs(frontmatter.created, 'YYYYMMDDHHmmssSSS').format(
+        'YYYY-MM-DD',
+      );
 
-      const content = matter.stringify({ content: `\n${text}` }, frontmatter);
+      // remove created field
+      delete frontmatter.created;
+
+      // remove empty tags
+      !frontmatter.tags && delete frontmatter.tags;
+
+      const filteredFrontmatter = Object.keys(frontmatter)
+        .filter((key) => {
+          return (
+            key === 'title' ||
+            key === 'tags' ||
+            key === 'date' ||
+            key === 'description'
+          );
+        })
+        .reduce((obj: any, key) => {
+          // 将满足条件的字段添加到新的对象中
+          obj[key] = frontmatter[key];
+          return obj;
+        }, {});
+
+      const content = matter.stringify(
+        { content: `\n${text}` },
+        filteredFrontmatter,
+      );
 
       const fileName = `${slugify(title, {
         lower: true,
