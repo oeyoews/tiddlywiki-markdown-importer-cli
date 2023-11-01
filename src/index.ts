@@ -12,6 +12,7 @@ import filterNonStringValues from './lib/filterfrontmatter';
 import { program } from 'commander';
 import cliProgress from 'cli-progress';
 import { version } from '../package.json';
+import { log } from './lib/log';
 
 dotenv.config();
 
@@ -34,11 +35,12 @@ const {
 } = program.opts();
 const url = `${host}:${port}`;
 
-console.log(
-  chalk.green(`\n==================\nport: ${port}
+log(
+  'green',
+  `\n==================\nport: ${port}
 importpath: ${importpath}
 url: ${url}
-username: ${username}\n=====================\n`),
+username: ${username}\n=====================\n`,
 );
 
 const targetdir = path.resolve('.', importpath);
@@ -84,7 +86,6 @@ fetch(url)
 
       // record files
       if (writefiles.has(title)) {
-        // console.log(chalk.red.bold(`title: ${title} 已存在`));
         return;
       } else {
         writefiles.set(title, filePath);
@@ -121,7 +122,6 @@ fetch(url)
         })
         .then((data) => {
           if (data) {
-            // console.log(chalk.red.bold(`Import of ${title} failed`));
             return;
           } else {
             // @ts-ignore
