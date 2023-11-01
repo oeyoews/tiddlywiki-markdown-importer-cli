@@ -1,10 +1,17 @@
 import matter from 'gray-matter';
 import fs from 'fs';
-import chalk from 'chalk';
+import chalk, { Chalk } from 'chalk';
+import path from 'path';
 
 const baseurl = 'http://0.0.0.0:8000';
 const title = '关于梦';
 const type = ['text/markdown', 'text/x-markdown'];
+const exportPath = 'content';
+
+const log = (type: string, text: string) => {
+  // @ts-ignore
+  return console.log(chalk?.[type]?.bold(text));
+};
 
 // TODO: 异常处理
 const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, baseurl);
@@ -16,17 +23,30 @@ fetch(putTiddlerUrl)
   })
   .then((data) => {
     if (!data) {
-      console.log(chalk.red.bold(`获取 ${title} 失败`));
+      log('red', `获取 ${title} 失败`);
       return;
     }
+
     const { text, fields, ...frontmatter } = data;
-    if (!type.includes(frontmatter?.type)) return;
+
+    if (!type.includes(frontmatter?.type)) {
+      log('red', `${title} 不是 ${type}`);
+      return;
+    }
+
     // TODO: 过滤空的属性
+    const mergedfrontmatter = Object.assign({}, frontmatter, fields);
     const content = matter.stringify(
       { content: `\n${text}` },
-      Object.assign({}, frontmatter, fields),
+      mergedfrontmatter,
     );
-    if (fs.existsSync(`content/${title}`)) return;
-    fs.writeFileSync(`content/${title}.md`, content);
-    console.log(chalk.green.bold(`写入 ${title} 成功`));
+
+    const targetfilename = path.join(exportPath, `${title}.md`);
+
+    if (!fs.existsSync(targetfilename)) {
+      fs.writeFileSync(targetfilename, content);
+      log('green', `写入 ${title} 成功`);
+    } else {
+      log('red', `${title} 已存在`);
+    }
   });
