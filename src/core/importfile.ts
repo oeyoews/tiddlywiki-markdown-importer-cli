@@ -1,6 +1,6 @@
 import fs from 'fs';
 import matter from 'gray-matter';
-import filterNonStringValues from './filterfrontmatter';
+import filterNonStringValues from '../lib/filterfrontmatter';
 import formattime from '../formattime';
 
 export function importfile(

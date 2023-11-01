@@ -9,7 +9,7 @@ import { program } from 'commander';
 import cliProgress from 'cli-progress';
 import { version } from '../package.json';
 import { log } from './lib/log';
-import { importfile } from './lib/importfile';
+import { importfile } from './core/importfile';
 
 dotenv.config();
 

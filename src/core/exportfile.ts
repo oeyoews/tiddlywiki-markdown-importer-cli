@@ -1,4 +1,4 @@
-import { log } from './lib/log';
+import { log } from '../lib/log';
 import matter from 'gray-matter';
 import slugify from 'slugify';
 import path from 'path';

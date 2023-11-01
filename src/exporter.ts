@@ -2,7 +2,7 @@ import fs from 'fs';
 import { log } from './lib/log';
 import cliProgress from 'cli-progress';
 import chalk from 'chalk';
-import { getfile } from './exportfile';
+import { getfile } from './core/exportfile';
 
 const baseurl = 'http://0.0.0.0:8000';
 const markdowntype = ['text/markdown', 'text/x-markdown'];
