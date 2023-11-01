@@ -1,4 +1,5 @@
 ![](banner.png)
+![](help.png)
 
 # tiddlywiki-markdown-importer-cli
 
@@ -20,8 +21,8 @@
 ```bash
 npm i -g tiddlywiki-markdown-importer-exporter-cli
 twmd -h
-twmd -i .
-twmd -i /your/markdonw/folder
+twmd import -i content -p 8080 # md -> tw
+twmd export -i content -p 8080 # tw -> md
 ```
 
 ## TODO
