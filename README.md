@@ -65,20 +65,6 @@ twmd export -i content -p 8080 # tw -> md
 * https://talk.tiddlywiki.org/t/question-how-to-render-json-instead-of-html-and-save-the-results-to-a-json-file/4910/15
 
 
-
-```markdown
-# title
-
-
-Tag: xxx
-Last update: xxx
-
-# 正文部分
-
-xxx
-```
-
-
 <!-- // 针对本地太微nodejs(无密码)实例
 // 写入, 导出, 更新, 查询, 删
 // TODO: 需要做好条目重写的提示
