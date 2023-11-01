@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { log } from './lib/log';
-import { getfile } from './core/exportfile';
+import { exportFile } from './core/exportfile';
 import { progressBar } from './lib/progressbar';
 import { program } from 'commander';
 import { version } from '../package.json';
@@ -56,7 +56,7 @@ fetch(tiddlersjsonurl)
         title,
         type: '',
       });
-      getfile(title, markdowntype, baseurl, fileExtension, twpath);
+      exportFile(title, markdowntype, baseurl, fileExtension, twpath);
       progressBar.update(index + 1, { title, type: 'Exporting:' });
     });
   })

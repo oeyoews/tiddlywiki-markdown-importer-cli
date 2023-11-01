@@ -7,8 +7,8 @@
   },
   "main": "./src/index.ts",
   "scripts": {
-    "dev": "ts-node ./src/index.ts",
-    "dev1": "ts-node ./src/exporter.ts",
+    "importer": "ts-node ./src/importer.ts",
+    "exporter": "ts-node ./src/exporter.ts",
     "build": "pnpm format && ncc build ./src/index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
     "sync": "cnpm sync",
     "format": "prettier src --write",

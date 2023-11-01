@@ -1,11 +1,21 @@
 import fs from 'fs';
 import matter from 'gray-matter';
 import filterNonStringValues from '../lib/filterfrontmatter';
-import formattime from '../formattime';
-import importer from '../importer';
+import formattime from '../lib/formatedtime';
 import { log } from '../lib/log';
 
-export function importfile(
+/**
+ * @description 从本地 markdown 文件导入 tiddler
+ * @param title
+ * @param filePath
+ * @param index
+ * @param writefiles
+ * @param baseurl
+ * @param username
+ * @param progressBar
+ * @returns
+ */
+export function importFile(
   title: string,
   filePath: string,
   index: number,
@@ -64,8 +74,24 @@ export function importfile(
         return;
       } else {
         // @ts-ignore
-        importer(putTiddlerUrl, tiddler, title);
+        writefile(putTiddlerUrl, tiddler, title);
         progressBar.update(index, { title });
       }
     });
 }
+
+const writefile = (url: URL, tiddler: { title: string }, title: string) => {
+  const body = JSON.stringify(tiddler);
+  const requestOptions = {
+    method: 'PUT',
+    // https://github.com/Jermolene/TiddlyWiki5/blob/4b56cb42983d4134715eb7fe7b083fdcc04980f0/plugins/tiddlywiki/tiddlyweb/tiddlywebadaptor.js#L149
+    headers: {
+      'Content-Type': 'application/json',
+      'x-requested-with': 'TiddlyWiki',
+    },
+    body,
+  };
+  fetch(url, requestOptions).then((res) => {
+    if (!res.ok) log(`写入 ${title} 失败`, 'red');
+  });
+};

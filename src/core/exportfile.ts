@@ -5,7 +5,15 @@ import slugify from 'slugify';
 import path from 'path';
 import fs from 'fs';
 
-export function getfile(
+/**
+ * @description: 从服务端 导出 tiddler 为 markdown
+ * @param title
+ * @param markdowntype
+ * @param baseurl
+ * @param fileExtension
+ * @param exportPath
+ */
+export function exportFile(
   title: string,
   markdowntype: any[],
   baseurl: string,
