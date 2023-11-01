@@ -8,7 +8,7 @@
 ## Feature
 
 * 导入的文件使用原markdown文件创建/修改时间, 不会导致时间线乱掉
-* 支持importer, 实验性支持exporter
+* 支持markdown的导入,导出
 * ...
 
 ## Usage
@@ -40,9 +40,9 @@ twmd -i /your/markdonw/folder
 - [ ] cli 自动发包
 - [ ] axios 打包200k
 - [ ] 重构代码
-- [ ] etag 是什么??
+- [ ] etag ??
 - [ ] 支持验证
-- [ ] support wikitext to markdown
+- [ ] support wikitext to markdown: 如果用户使用到了macro等高级tw语法, 这一步不可能也不能做到
 - [ ] 接入三方api(notion)
 - [ ] 浏览器扩展
 
