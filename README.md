@@ -52,6 +52,18 @@ twmd -i /your/markdonw/folder
 * 文件使用LF, 否则打包的时候, 第一行的shebang会和代码混在一起(for developers)
 * notion 导出的markdown, 不遵循 YML 语法
 
+## Links
+
+// TODO: 验证是否需要密码
+// TODO: 是否验证成功
+// https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Get%20Server%20Status
+// headers.append('Authorization', 'Basic ' + btoa(user + ':' + password));
+
+// https://bramchen.github.io/tw5-docs/zh-Hans/#ListenCommand
+// https://github.com/Jermolene/TiddlyWiki5/pull/7471
+// https://talk.tiddlywiki.org/t/question-how-to-render-json-instead-of-html-and-save-the-results-to-a-json-file/4910/15
+
+
 
 ```markdown
 # title

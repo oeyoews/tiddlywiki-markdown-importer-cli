@@ -2,34 +2,40 @@ import fs from 'fs';
 import { log } from './lib/log';
 import { getfile } from './core/exportfile';
 import { progressBar } from './lib/progressbar';
+import { program } from 'commander';
+import { version } from '../package.json';
 
-const host = 'http://0.0.0.0';
-const port = 8000;
+program
+  .option('-p, --port <port>', '设置端口号 <8080>')
+  .option('-i, --twpath <twpath>', '设置导入路径 <content>')
+  .option('-H, --host <host>', '设置主机名: http://0.0.0.0')
+  .option('-u, --username <username>', '设置用户名 <your pc username>')
+  .version(version, '-v, --version', '显示版本')
+  .parse();
+
+// cli 中 dotenv 不可用
+const {
+  port = 8080,
+  twpath = 'content',
+  host = 'http://0.0.0.0',
+  username = process.env.USERNAME || 'markdown-importer-exporter-cli',
+} = program.opts();
+
 const baseurl = `${host}:${port}`;
 const markdowntype = ['text/markdown', 'text/x-markdown'];
-const exportPath = 'content';
 const fileExtension = '.md'; // .mdx
 
 // 如果你构建了在线的tiddlers.json, 也可以直接使用那个地址, 可以使用tiddlyhost 测试, 默认提供tiddlers.json
 // https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Get%20All%20Tiddlers
 
-if (fs.existsSync(exportPath)) {
-  fs.rmSync(exportPath, { recursive: true, force: true });
+if (fs.existsSync(twpath)) {
+  fs.rmSync(twpath, { recursive: true, force: true });
 }
-fs.mkdirSync(exportPath);
+fs.mkdirSync(twpath);
 
 const tiddlersjsonurl = new URL(`/recipes/default/tiddlers.json`, baseurl);
 
 const markdownfiletitles: string[] = [];
-
-// TODO: 验证是否需要密码
-// TODO: 是否验证成功
-// https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Get%20Server%20Status
-// headers.append('Authorization', 'Basic ' + btoa(user + ':' + password));
-
-// https://bramchen.github.io/tw5-docs/zh-Hans/#ListenCommand
-// https://github.com/Jermolene/TiddlyWiki5/pull/7471
-// https://talk.tiddlywiki.org/t/question-how-to-render-json-instead-of-html-and-save-the-results-to-a-json-file/4910/15
 
 fetch(tiddlersjsonurl)
   .then((res) => {
@@ -50,7 +56,7 @@ fetch(tiddlersjsonurl)
         title,
         type: '',
       });
-      getfile(title, markdowntype, baseurl, fileExtension, exportPath);
+      getfile(title, markdowntype, baseurl, fileExtension, twpath);
       progressBar.update(index + 1, { title, type: 'Exporting:' });
     });
   })

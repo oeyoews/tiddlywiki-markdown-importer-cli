@@ -11,7 +11,7 @@ import { progressBar } from './lib/progressbar';
 // https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Put%20Tiddler
 program
   .option('-p, --port <port>', '设置端口号 <8080>')
-  .option('-i, --importpath <importpath>', '设置导入路径 <content>')
+  .option('-i, --twpath <twpath>', '设置导入路径 <content>')
   .option('-H, --host <host>', '设置主机名: http://0.0.0.0')
   .option('-u, --username <username>', '设置用户名 <your pc username>')
   .version(version, '-v, --version', '显示版本')
@@ -20,7 +20,7 @@ program
 // cli 中 dotenv 不可用
 const {
   port = 8080,
-  importpath = 'content',
+  twpath = 'content',
   host = 'http://0.0.0.0',
   username = process.env.USERNAME || 'markdown-importer',
 } = program.opts();
@@ -31,12 +31,12 @@ const baseurl = `${host}:${port}`;
 
 log(
   `\n==================\nport: ${port}
-importpath: ${importpath}
+twpath: ${twpath}
 baseurl: ${baseurl}
 username: ${username}\n=====================\n`,
 );
 
-const targetdir = path.resolve('.', importpath);
+const targetdir = path.resolve('.', twpath);
 const files = readDirRecursive(targetdir);
 const markdownFiles = files.filter(({ filetype }) =>
   markdowntypes.includes(filetype),
