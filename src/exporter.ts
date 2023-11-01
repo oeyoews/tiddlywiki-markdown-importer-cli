@@ -11,6 +11,8 @@ const markdowntype = ['text/markdown', 'text/x-markdown'];
 const exportPath = 'content';
 const fileExtension = '.md'; // .mdx
 
+// 如果你构建了在线的tiddlers.json, 也可以直接使用那个地址, 可以使用tiddlyhost 测试, 默认提供tiddlers.json
+// https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Get%20All%20Tiddlers
 const progressBar = new cliProgress.SingleBar(
   {
     format: `${chalk.cyanBright.bold(
@@ -29,7 +31,7 @@ if (fs.existsSync(exportPath)) {
 }
 fs.mkdirSync(exportPath);
 
-const tiddlersjson = new URL(`recipes/default/tiddlers.json`, baseurl);
+const tiddlersjson = new URL(`/recipes/default/tiddlers.json`, baseurl);
 
 const markdownfiletitles: string[] = [];
 const user = 'oeyoews';
@@ -39,10 +41,24 @@ const headers = new Headers();
 
 // TODO: 验证是否需要密码
 // TODO: 是否验证成功
+// https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Get%20Server%20Status
 // headers.append('Authorization', 'Basic ' + btoa(user + ':' + password));
 
 // https://bramchen.github.io/tw5-docs/zh-Hans/#ListenCommand
 // https://github.com/Jermolene/TiddlyWiki5/pull/7471
+
+const loginurl = new URL(`status`, baseurl);
+
+fetch(loginurl, {
+
+}).then((res) => {
+  console.log(res)
+})
+
+// fetch(loginurl, {}).then((res) => {
+//   if (res.statusText === '  Authentication required') log('需要认证', 'red');
+// });
+
 fetch(tiddlersjson, {
   // @ts-ignore
   // data: {
@@ -50,10 +66,10 @@ fetch(tiddlersjson, {
   //   password,
   //   tiddlyweb_redirect: '/status',
   // },
-  method: 'GET',
-  headers: {
-    'X-Authenticated-User': 'oeyoews',
-  },
+  // method: 'GET',
+  // headers: {
+  //   'X-Authenticated-User': 'oeyoews',
+  // },
 })
   .then((res) => {
     return res.json();
@@ -80,7 +96,7 @@ fetch(tiddlersjson, {
   });
 
 function getfile(title: string) {
-  const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, baseurl);
+  const putTiddlerUrl = new URL(`/recipes/default/tiddlers/${title}`, baseurl);
   fetch(putTiddlerUrl)
     .then((res) => {
       if (res.ok) return res.json();

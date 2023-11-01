@@ -45,11 +45,12 @@ username: ${username}\n=====================\n`,
 const targetdir = path.resolve('.', importpath);
 const files = readDirRecursive(targetdir);
 
+// https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Put%20Tiddler
 const progressBar = new cliProgress.SingleBar(
   {
     format: `${chalk.green(
-      'Importing: ',
-    )} {{bar}')} {percentage}% | {value}/{total} {title} `,
+      'Importing: {bar}',
+    )} {percentage}% | {value}/{total} {title} `,
     stopOnComplete: true,
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
@@ -62,6 +63,7 @@ const writefiles = new Map();
 
 fetch(url)
   .then((res) => {
+    // TODO: 验证
     if (!res.ok) {
       throw new Error('error');
     }
