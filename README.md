@@ -5,9 +5,9 @@
 > [!WARNING]
 > 目前针对简单情况的markdown可以一键批量导入到tiddlywki, 但是真实情况下, 每个用户的情况都不同, 需要进行不同程度的支持, 和错误处理(暂时没有相关反馈, 无法更近一步处理 见 [issue1](https://github.com/oeyoews/tiddlywiki-markdown-importer-cli/issues/1))
 
-* 导入导出都是对于tiddlywiki(tw)而言的.
-* 导入: 从本地markdownd(md)导入到tiddlywiki (md -> tw)
-* 导出: 从tiddlywiki 导出到本地markdown (tw -> md)
+* 导入导出都是对于tiddlywiki(tw)而言的, 或者说主体都是markdown(md).
+* 导入: 从本地markdownd(md)导入到tiddlywiki, 即markdown的导入 (md -> tw)
+* 导出: 从tiddlywiki 导出到本地markdown, 即markdown的导出 (tw -> md)
 
 ## Feature
 
