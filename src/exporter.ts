@@ -3,11 +3,26 @@ import fs from 'fs';
 import path from 'path';
 import { log } from './lib/log';
 import slugify from 'slugify';
+import cliProgress from 'cli-progress';
+import chalk from 'chalk';
 
 const baseurl = 'http://0.0.0.0:8000';
 const markdowntype = ['text/markdown', 'text/x-markdown'];
 const exportPath = 'content';
 const fileExtension = '.md'; // .mdx
+
+const progressBar = new cliProgress.SingleBar(
+  {
+    format: `${chalk.cyanBright.bold(
+      'Export: {bar}',
+    )} {percentage}% | {value}/{total} {title} `,
+    stopOnComplete: true,
+    barCompleteChar: '\u2588',
+    barIncompleteChar: '\u2591',
+    hideCursor: false,
+  },
+  cliProgress.Presets.shades_classic,
+);
 
 if (fs.existsSync(exportPath)) {
   fs.rmSync(exportPath, { recursive: true, force: true });
@@ -19,22 +34,34 @@ const tiddlersjson = new URL(`recipes/default/tiddlers.json`, baseurl);
 
 const markdownfiletitles: string[] = [];
 
-fetch(tiddlersjson)
+fetch(tiddlersjson, {
+  method: 'GET',
+  headers: {
+    'x-requested-with': 'TiddlyWiki',
+    'Content-Type': 'application/json',
+  },
+})
   .then((res) => {
     return res.json();
   })
   .then((data) => {
     if (!data) return;
-    log(`共有 ${data.length} 个 tiddler`);
     // @ts-ignore
     data.forEach(({ title, type }) => {
       markdowntype.includes(type) && markdownfiletitles.push(title);
     });
   })
+  // 这里的异步其实无效
   .then(() => {
-    markdownfiletitles.forEach((title) => {
+    markdownfiletitles.forEach((title, index) => {
+      progressBar.start(markdownfiletitles.length, index, { title });
       getfile(title);
+      progressBar.update(index + 1, { title });
     });
+  })
+  .then(() => {
+    progressBar.stop();
+    log(`\n共有 ${markdownfiletitles.length} 个 tiddler`, 'cyan');
   });
 
 function getfile(title: string) {
@@ -70,7 +97,6 @@ function getfile(title: string) {
 
       if (!fs.existsSync(targetfilename)) {
         fs.writeFileSync(targetfilename, content);
-        log(`写入 ${title} 成功`);
       } else {
         log(`${title} 已存在`, 'red');
       }

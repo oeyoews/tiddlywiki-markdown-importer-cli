@@ -41,6 +41,8 @@ twmd -i /your/markdonw/folder
 - [ ] axios 打包200k
 - [ ] 重构代码
 - [ ] etag 是什么??
+- [ ] 支持验证
+- [ ] support wikitext to markdown
 
 ## NOTE
 

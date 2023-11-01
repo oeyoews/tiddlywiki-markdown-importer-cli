@@ -47,7 +47,9 @@ const files = readDirRecursive(targetdir);
 
 const progressBar = new cliProgress.SingleBar(
   {
-    format: `${chalk.green('{bar}')} {percentage}% | {value}/{total} {title} `,
+    format: `${chalk.green(
+      'Importing: ',
+    )} {{bar}')} {percentage}% | {value}/{total} {title} `,
     stopOnComplete: true,
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
@@ -60,7 +62,6 @@ const writefiles = new Map();
 
 fetch(url)
   .then((res) => {
-    // TODO: 抑制错误输出
     if (!res.ok) {
       throw new Error('error');
     }
