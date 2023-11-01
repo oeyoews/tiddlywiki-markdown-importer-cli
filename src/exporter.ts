@@ -3,8 +3,11 @@ import { log } from './lib/log';
 import cliProgress from 'cli-progress';
 import chalk from 'chalk';
 import { getfile } from './core/exportfile';
+import { getStatus } from './getstatus';
 
-const baseurl = 'http://0.0.0.0:8000';
+const host = 'http://0.0.0.0';
+const port = 8000;
+const baseurl = `${host}:${port}`;
 const markdowntype = ['text/markdown', 'text/x-markdown'];
 const exportPath = 'content';
 const fileExtension = '.md'; // .mdx
