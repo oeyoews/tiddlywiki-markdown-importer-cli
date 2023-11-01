@@ -3,16 +3,13 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import write from './write';
 import dotenv from 'dotenv';
-import formattime from './formattime';
 import readDirRecursive from './getallfiles';
-import matter from 'gray-matter';
-import filterNonStringValues from './lib/filterfrontmatter';
 import { program } from 'commander';
 import cliProgress from 'cli-progress';
 import { version } from '../package.json';
 import { log } from './lib/log';
+import { importfile } from './lib/importfile';
 
 dotenv.config();
 
@@ -75,67 +72,16 @@ fetch(url)
   .then(() => {
     markdownFiles.forEach(({ filename: title, filePath }, index) => {
       progressBar.update(index, { title });
-      importfile(title, filePath, index);
+      importfile(
+        title,
+        filePath,
+        index,
+        writefiles,
+        url,
+        username,
+        progressBar,
+      );
       progressBar.update(index + 1, { title });
     });
   })
   .then(() => progressBar.stop());
-
-function importfile(title: string, filePath: string, index: number) {
-  const text = fs.readFileSync(filePath, 'utf-8');
-  // TODO: content 首行不会被去除
-  const { data, content } = matter(text);
-  if (!data) return;
-
-  if (data?.title) {
-    title = data.title;
-  }
-
-  const filteredData = filterNonStringValues(data);
-
-  // record files
-  if (writefiles.has(title)) {
-    return;
-  } else {
-    writefiles.set(title, filePath);
-  }
-  const { birthtime, mtime } = fs.statSync(filePath);
-  const created = formattime(birthtime);
-  const modified = formattime(mtime);
-
-  // TODO: 测试是否可以自动递归目录
-  const putTiddlerUrl = new URL(`recipes/default/tiddlers/${title}`, url);
-
-  const tiddler = {
-    text: content,
-    type: 'text/markdown',
-    created,
-    creator: username,
-    modified,
-  };
-
-  try {
-    Object.assign(tiddler, filteredData);
-  } catch (e) {
-    e;
-  }
-
-  fetch(putTiddlerUrl)
-    .then((res) => {
-      let data;
-      if (res.ok) {
-        data = res.json();
-        return data;
-      }
-      return false;
-    })
-    .then((data) => {
-      if (data) {
-        return;
-      } else {
-        // @ts-ignore
-        write(putTiddlerUrl, tiddler, title);
-        progressBar.update(index, { title });
-      }
-    });
-}
