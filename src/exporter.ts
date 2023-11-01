@@ -1,6 +1,6 @@
 import matter from 'gray-matter';
 import fs from 'fs';
-import chalk, { Chalk } from 'chalk';
+import chalk from 'chalk';
 import path from 'path';
 
 const baseurl = 'http://0.0.0.0:8000';
