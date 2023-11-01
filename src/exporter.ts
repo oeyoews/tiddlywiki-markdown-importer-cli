@@ -1,8 +1,7 @@
 import fs from 'fs';
 import { log } from './lib/log';
-import cliProgress from 'cli-progress';
-import chalk from 'chalk';
 import { getfile } from './core/exportfile';
+import { progressBar } from './lib/progressbar';
 
 const host = 'http://0.0.0.0';
 const port = 8000;
@@ -13,18 +12,6 @@ const fileExtension = '.md'; // .mdx
 
 // 如果你构建了在线的tiddlers.json, 也可以直接使用那个地址, 可以使用tiddlyhost 测试, 默认提供tiddlers.json
 // https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Get%20All%20Tiddlers
-const progressBar = new cliProgress.SingleBar(
-  {
-    format: `${chalk.cyanBright.bold(
-      'Export: {bar}',
-    )} {percentage}% | {value}/{total} {title} `,
-    stopOnComplete: true,
-    barCompleteChar: '\u2588',
-    barIncompleteChar: '\u2591',
-    hideCursor: false,
-  },
-  cliProgress.Presets.shades_classic,
-);
 
 if (fs.existsSync(exportPath)) {
   fs.rmSync(exportPath, { recursive: true, force: true });
@@ -59,9 +46,12 @@ fetch(tiddlersjsonurl)
   // 这里的异步其实无效
   .then(() => {
     markdownfiletitles.forEach((title, index) => {
-      progressBar.start(markdownfiletitles.length, index, { title });
+      progressBar.start(markdownfiletitles.length, index, {
+        title,
+        type: '',
+      });
       getfile(title, markdowntype, baseurl, fileExtension, exportPath);
-      progressBar.update(index + 1, { title });
+      progressBar.update(index + 1, { title, type: 'Exporting:' });
     });
   })
   .then(() => {

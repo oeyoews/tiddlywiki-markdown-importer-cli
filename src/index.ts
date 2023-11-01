@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 
 import path from 'path';
-import chalk from 'chalk';
 import readDirRecursive from './getallfiles';
 import { program } from 'commander';
-import cliProgress from 'cli-progress';
 import { version } from '../package.json';
 import { log } from './lib/log';
 import { importfile } from './core/importfile';
+import { progressBar } from './lib/progressbar';
 
 // https://bramchen.github.io/tw5-docs/zh-Hans/#WebServer%20API%3A%20Put%20Tiddler
 program
@@ -43,33 +42,14 @@ const markdownFiles = files.filter(({ filetype }) =>
   markdowntypes.includes(filetype),
 );
 
-const progressBar = new cliProgress.SingleBar(
-  {
-    format: `${chalk.green(
-      'Importing: {bar}',
-    )} {percentage}% | {value}/{total} {title} `,
-    stopOnComplete: true,
-    barCompleteChar: '\u2588',
-    barIncompleteChar: '\u2591',
-    hideCursor: false,
-  },
-  cliProgress.Presets.shades_classic,
-);
-progressBar.start(markdownFiles.length, 0, { title: '' });
+progressBar.start(markdownFiles.length, 0, { title: '', type: '' });
 
 const writefiles = new Map();
 
 fetch(baseurl)
-  .then((res) => {
-    // TODO: 验证
-    // 是否连通
-    if (!res.ok) {
-      throw new Error('error');
-    }
-  })
   .then(() => {
     markdownFiles.forEach(({ filename: title, filePath }, index) => {
-      progressBar.update(index, { title });
+      progressBar.update(index, { title, type: 'Importing:' });
       importfile(
         title,
         filePath,
