@@ -43,6 +43,8 @@ twmd -i /your/markdonw/folder
 - [ ] etag 是什么??
 - [ ] 支持验证
 - [ ] support wikitext to markdown
+- [ ] 接入三方api(notion)
+- [ ] 浏览器扩展
 
 ## NOTE
 
