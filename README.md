@@ -8,6 +8,7 @@
 ## Feature
 
 * 导入的文件使用原markdown文件创建/修改时间, 不会导致时间线乱掉
+* 支持importer, 实验性支持exporter
 * ...
 
 ## Usage
