@@ -22,4 +22,3 @@ export default function readDirRecursive(dirPath: string) {
 
   return fileData;
 }
-

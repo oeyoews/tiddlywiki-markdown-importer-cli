@@ -37,10 +37,13 @@ twmd -i /your/markdonw/folder
 - [ ] 相对路径的图片路径处理
 - [ ] support markdown exporter (tiddlywiki 插件版本:  markdow exporter)
 - [ ] cli 自动发包
+- [ ] axios 打包200k
 
 ## NOTE
 
-notion 导出的markdown, 不遵循 YML 语法
+* 文件使用LF, 否则打包的时候, 第一行的shebang会和代码混在一起(for developers)
+* notion 导出的markdown, 不遵循 YML 语法
+
 
 ```markdown
 # title

@@ -1,6 +1,6 @@
 {
   "name": "tiddlywiki-markdown-importer-exporter-cli",
-  "version": "1.3.6",
+  "version": "1.3.8",
   "description": "tiddlywiki-markdown-importer-exporter-cli",
   "bin": {
     "twmd": "./dist/index.js"
@@ -8,7 +8,7 @@
   "main": "./src/index.ts",
   "scripts": {
     "dev": "ts-node ./src/index.ts",
-    "build": "ncc build ./src/index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
+    "build": "pnpm format && ncc build ./src/index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
     "sync": "cnpm sync",
     "format": "prettier src --write",
     "publish:dry": "npm publish --dry-run"
