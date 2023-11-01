@@ -55,7 +55,6 @@ fetch(tiddlersjsonurl)
       markdowntype.includes(type) && markdownfiletitles.push(title);
     });
   })
-  // 这里的异步其实无效
   .then(() => {
     markdownfiletitles.forEach((title, index) => {
       progressBar.start(markdownfiletitles.length, index, {

@@ -50,12 +50,10 @@ if (!fs.existsSync(twpath)) {
 
 progressBar.start(markdownFiles.length, 0, { title: '', type: '' });
 
-fetch(baseurl)
-  .then(() => {
-    markdownFiles.forEach(({ filename: title, filePath }, index) => {
-      progressBar.update(index, { title, type: 'Importing:' });
-      importFile(baseurl, filePath, title, username);
-      progressBar.update(index + 1, { title });
-    });
-  })
-  .then(() => progressBar.stop());
+markdownFiles.forEach(({ filename: title, filePath }, index) => {
+  progressBar.update(index, { title, type: 'Importing:' });
+  importFile(baseurl, filePath, title, username);
+  progressBar.update(index + 1, { title });
+});
+
+
