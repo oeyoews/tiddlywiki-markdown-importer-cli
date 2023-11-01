@@ -35,6 +35,9 @@ devDependencies:
   prettier:
     specifier: ^3.0.3
     version: 3.0.3
+  slugify:
+    specifier: ^1.6.6
+    version: 1.6.6
   ts-node:
     specifier: ^10.9.1
     version: 10.9.1(@types/node@20.8.10)(typescript@5.2.2)
@@ -263,6 +266,11 @@ packages:
     dependencies:
       extend-shallow: 2.0.1
       kind-of: 6.0.3
+    dev: true
+
+  /slugify@1.6.6:
+    resolution: {integrity: sha512-h+z7HKHYXj6wJU+AnS/+IH8Uh9fdcX1Lrhg1/VMdf9PwoBQXFcXiAdsy2tSK0P6gKwJLXp02r90ahUCqHk9rrw==}
+    engines: {node: '>=8.0.0'}
     dev: true
 
   /sprintf-js@1.0.3:

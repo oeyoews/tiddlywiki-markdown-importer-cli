@@ -36,7 +36,6 @@ const {
 const url = `${host}:${port}`;
 
 log(
-  'green',
   `\n==================\nport: ${port}
 importpath: ${importpath}
 url: ${url}

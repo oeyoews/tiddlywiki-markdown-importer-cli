@@ -40,6 +40,7 @@ twmd -i /your/markdonw/folder
 - [ ] cli 自动发包
 - [ ] axios 打包200k
 - [ ] 重构代码
+- [ ] etag 是什么??
 
 ## NOTE
 

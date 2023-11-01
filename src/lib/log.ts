@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-export const log = (type: string, text: string) => {
+export const log = (text: string, type: string = 'green') => {
   // @ts-ignore
   return console.log(chalk?.[type]?.bold(text));
 };
