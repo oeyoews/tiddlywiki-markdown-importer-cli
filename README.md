@@ -27,21 +27,6 @@ twmd export -i content -p 8080 # tw -> md
 
 ## TODO
 
-* [x] url test ping
-- [x] 写入文件的创建,修改时间
-- [x] suport import markdown file
-- [x] suport export markdown file(tiddlywiki 插件版本: markdown obsidian manager)
-- [x] ncc 打包成cli
-- [x] 支持参数, 配置文件读取
-- [x] release npm package
-- [x] supoprt parse yml
-- [x] 默认读取当前目录下的 `content` 目录
-- [x] 如何本地测试npm package link?
-- [x] exporter suppor cli
-- [x] 名字错乱(支持导入md&&md.meta)
-- [x] yml 异常语法校验, 异常捕获
-- [x] windows 下路径有问题
-- [x] support markdown exporter (tiddlywiki 插件版本:  markdow exporter)
 - [ ] 相对路径的图片路径处理
 - [ ] cli 自动发包
 - [ ] 重构代码
