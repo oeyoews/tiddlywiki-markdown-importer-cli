@@ -29,16 +29,30 @@ if (fs.existsSync(exportPath)) {
 }
 fs.mkdirSync(exportPath);
 
-// TODO: 异常处理
 const tiddlersjson = new URL(`recipes/default/tiddlers.json`, baseurl);
 
 const markdownfiletitles: string[] = [];
+const user = 'oeyoews';
+const password = 'oeyoews';
 
+const headers = new Headers();
+
+// TODO: 验证是否需要密码
+// TODO: 是否验证成功
+// headers.append('Authorization', 'Basic ' + btoa(user + ':' + password));
+
+// https://bramchen.github.io/tw5-docs/zh-Hans/#ListenCommand
+// https://github.com/Jermolene/TiddlyWiki5/pull/7471
 fetch(tiddlersjson, {
+  // @ts-ignore
+  // data: {
+  //   user,
+  //   password,
+  //   tiddlyweb_redirect: '/status',
+  // },
   method: 'GET',
   headers: {
-    'x-requested-with': 'TiddlyWiki',
-    'Content-Type': 'application/json',
+    'X-Authenticated-User': 'oeyoews',
   },
 })
   .then((res) => {
@@ -46,6 +60,7 @@ fetch(tiddlersjson, {
   })
   .then((data) => {
     if (!data) return;
+
     // @ts-ignore
     data.forEach(({ title, type }) => {
       markdowntype.includes(type) && markdownfiletitles.push(title);
