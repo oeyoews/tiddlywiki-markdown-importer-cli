@@ -35,6 +35,7 @@ twmd export -i content -p 8080 # tw -> md
 - [ ] support wikitext to markdown: 如果用户使用到了macro等高级tw语法, 这一步不可能也不能做到, tid 的meta信息可以借助gray-matter 来处理
 - [ ] 接入三方api(notion)
 - [ ] 浏览器扩展
+- [ ] support tiddlers.json file
 
 ## NOTE
 
