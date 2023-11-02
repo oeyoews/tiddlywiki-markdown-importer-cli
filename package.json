@@ -7,8 +7,7 @@
   },
   "main": "./src/index.ts",
   "scripts": {
-    "importer": "ts-node ./src/importer.ts",
-    "exporter": "ts-node ./src/exporter.ts",
+    "dev": "ts-node ./src/index.ts",
     "build": "pnpm format && ncc build ./src/index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
     "sync": "cnpm sync",
     "format": "prettier src --write",
@@ -32,7 +31,8 @@
     "prettier": "^3.0.3",
     "slugify": "^1.6.6",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0"
+    "tsconfig-paths": "^4.2.0",
+    "tw5-typed": "^0.3.11"
   },
   "files": [
     "dist",

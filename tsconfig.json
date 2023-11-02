@@ -8,6 +8,10 @@
 		"strict": true,
 		// "module": "CommonJS",
 		"declaration": false, // ncc to set false
+		"types": [
+			"node",
+			"tw5-typed"
+		]
 	},
 	"exclude": [
 		"node_modules/",

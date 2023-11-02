@@ -30,7 +30,7 @@ program
   .option('-H, --host <host>', '设置主机名: http://0.0.0.0')
   .option('-u, --username <username>', '设置用户名 <your pc username>')
   .version(version, '-v, --version', '显示版本')
-  .parse();
+  .parse(); // last parse before command
 
 const {
   port = 8080,
